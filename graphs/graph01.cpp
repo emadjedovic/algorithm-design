@@ -101,7 +101,7 @@ void Graph::adjacencyListToAdjacencyMatrix()
   {
     // go through each node's neighbours
     Node currentNode = adjacencyList[i];
-    for (int j = 0; j < currentNode.neighbours.size(); j++)
+    for (size_t j = 0; j < currentNode.neighbours.size(); j++)
     {
       // boolean matrix for unweighted graph
       int neighbourLabel = currentNode.neighbours[j];
@@ -117,7 +117,7 @@ void Graph::adjacencyListToEdgeList()
   {
     Node currentNode = adjacencyList[i];
     // for each node add its out-pointing edges
-    for (int j = 0; j < currentNode.neighbours.size(); j++)
+    for (size_t j = 0; j < currentNode.neighbours.size(); j++)
     {
       int endingNodeLabel = currentNode.neighbours[j];
       edgeList.push_back(Edge(i, endingNodeLabel));
@@ -133,7 +133,7 @@ void Graph::printAdjacencyList()
   {
     Node currentNode = adjacencyList[i];
     cout << currentNode.label << ": ";
-    for (int j = 0; j < currentNode.neighbours.size(); j++)
+    for (size_t j = 0; j < currentNode.neighbours.size(); j++)
     {
       cout << currentNode.neighbours[j] << " ";
     }

@@ -17,7 +17,7 @@ void BFS(const vector<vector<int>> graph){
         int currentNode = visitingQueue.front();
         vector<int> neighbours = graph[currentNode];
 
-        for (int i = 0; i < neighbours.size(); i++)
+        for (size_t i = 0; i < neighbours.size(); i++)
         {
             // don't add nodes that are already added
             if(!queued[neighbours[i]]){
