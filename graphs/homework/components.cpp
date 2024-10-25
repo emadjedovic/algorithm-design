@@ -115,7 +115,7 @@ void Graph::findComponents()
     {
         if(!visited[i]) {
             vector<int> currentComponent;
-            DFS(i, visited, currentComponent); // find all nodes in this component
+            DFS(i, visited, currentComponent);
             Graph currentComponentGraph(currentComponent.size());
 
             // treat nodes 4, 7, 9 as 0, 1, 2...
@@ -133,7 +133,6 @@ void Graph::findComponents()
                     int localEndNode = localNodes[neighbour];
 
                     if (localEndNode != -1) {
-                        // Add the edge to the component graph (both directions since it's undirected)
                         currentComponentGraph.addEdge(Edge(localStartNode, localEndNode));
                     }
                 }
