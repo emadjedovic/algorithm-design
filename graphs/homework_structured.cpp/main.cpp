@@ -1,7 +1,9 @@
+#include "graph.cpp"
 #include "zadatak1.cpp"
 #include "zadatak2.cpp"
 #include "zadatak3.cpp"
 #include "zadatak4.cpp"
+#include "zadatak5.cpp"
 
 int main()
 {
@@ -67,7 +69,7 @@ int main()
     directedGraph6.addEdge(2, 3);
     directedGraph6.addEdge(3, 1);
 
-    cout<<"Topolosko sortiranje: ";
+    cout << "Topolosko sortiranje: ";
     directedGraph6.topologicalSort();
     cout << endl;
 
@@ -77,6 +79,37 @@ int main()
     cout << "Topolosko nad ciklicnim grafom:" << endl;
     directedGraph6.topologicalSort();
     cout << endl;
+
+    cout << "--------------- ZADATAK 5\n\n";
+    
+    Graph directedForDrawing(7, true);
+    directedForDrawing.addEdge(0, 1);
+    directedForDrawing.addEdge(1, 3);
+    directedForDrawing.addEdge(1, 4);
+    directedForDrawing.addEdge(1, 5);
+    directedForDrawing.addEdge(0, 2);
+    directedForDrawing.addEdge(2, 5);
+    directedForDrawing.addEdge(0, 6);
+    directedForDrawing.addEdge(6, 2);
+
+    cout << "Adjacency list of directed:\n";
+    directedForDrawing.printAdjacencyList();
+
+    // konvertovan
+    Graph gDraw = directedForDrawing.convertToUndirected();
+    cout << "\nAdjacency list of undirected:\n";
+    gDraw.printAdjacencyList();
+
+    // dodjeljujemo koordinate
+    gDraw.assignCoordinatesUsingBFS();
+    cout << "\nCoordinates:\n";
+    gDraw.printCoordinates();
+
+    // crtamo graf
+    cout<<"\nDrawing the graph..."<<endl;
+    gDraw.drawGraph();
+
+    directedForDrawing.drawInstantly();
 
     return 0;
 }

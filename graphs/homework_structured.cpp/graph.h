@@ -10,6 +10,8 @@ ZADAĆA (PREDAVANJA 1-3)
 
 4. Topološko sortiranje. O(E+V). Čuvati queue čvorova izlaznog stepena 0.
 
+5. Implementirati crtanje grafa. Dati čvorovima koordinate. Linije simulirati recimo sa +++++.
+
 NAPOMENA: Korišten šablon grafa data na predavanjima, s tim da su izbačene neke stvari koje
 nisu od važnosti ovdje i smatram da je bez njih kod čitljiviji. Npr. izbačena je struktura Edge,
 izbačene su matrica susjedstva i lista grana, kao i njihove pripadajuće konverzije i printanje.
@@ -45,13 +47,14 @@ private:
 
     vector<bool> visited;
     vector<int> previous;
-    set<set<int>> cycles; // da izbjegnemo ponavljanja
+    set<set<int>> cycles;               // da izbjegnemo ponavljanja
+    vector<pair<int, int>> coordinates; // za crtanje grafa
 
-     // ZADATAK 3 (pomoćna funkcija)
+    // ZADATAK 3 (pomoćna funkcija)
     void assignComponentToNeighbours(int start, vector<bool> &visited, Graph &currentComponentGraph);
 
 public:
-    Graph(int n, bool d=false);
+    Graph(int n, bool d = false);
     void addEdge(int start, int end);
     void makeAdjacencyList();
     void printAdjacencyList();
@@ -62,65 +65,13 @@ public:
     void printCycles();                                                         // ZADATAK 2
     void findComponents();                                                      // ZADATAK 3
     void topologicalSort();                                                     // ZADATAK 4
+
+    // ZADATAK 5
+    Graph convertToUndirected() const;
+    void assignCoordinatesUsingBFS();
+    void printCoordinates();
+    void drawGraph();
+    void drawInstantly(); // sve metode u jednom
 };
-
-Graph::Graph(int n, bool d) : numberOfNodes(n), numberOfEdges(0), isDirected(d)
-{
-    adjacencyList.resize(n);
-    visited.resize(n, false);
-    previous.resize(n, -1);
-    for (int i = 0; i < n; i++)
-    {
-        adjacencyList[i].label = i;
-        adjacencyList[i].indegree = 0;
-    }
-};
-
-void Graph::addEdge(int start, int end)
-{
-    adjacencyList[start].neighbours.push_back(end);
-    adjacencyList[end].indegree++;
-    if(!isDirected){
-        adjacencyList[end].neighbours.push_back(start);
-        adjacencyList[start].indegree++;
-    }
-    numberOfEdges++;
-}
-void Graph::makeAdjacencyList()
-{
-    for (int i = 0; i < numberOfNodes; i++)
-    {
-        Node newNode;
-        newNode.label = i;
-
-        int outDegree;
-        cout << "Node out-degree: ";
-        cin >> outDegree;
-        newNode.neighbours.clear();
-        for (int j = 0; j < outDegree; j++)
-        {
-            int label;
-            cout << "Add neighbour with label: ";
-            cin >> label;
-            newNode.neighbours.push_back(label);
-            adjacencyList[label].indegree++;
-        }
-        adjacencyList[i] = newNode;
-    }
-}
-
-void Graph::printAdjacencyList()
-{
-    for (int i = 0; i < numberOfNodes; i++)
-    {
-        Node currentNode = adjacencyList[i];
-        cout << currentNode.label << ": ";
-        for (int neighbour : currentNode.neighbours)
-        {
-            cout << neighbour << " ";
-        }
-        cout << endl;
-    }
-}
 
 #endif
