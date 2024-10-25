@@ -4,6 +4,7 @@
 #include "zadatak3.cpp"
 #include "zadatak4.cpp"
 #include "zadatak5.cpp"
+#include "zadatak6.cpp"
 
 int main()
 {
@@ -81,7 +82,7 @@ int main()
     cout << endl;
 
     cout << "--------------- ZADATAK 5\n\n";
-    
+
     Graph directedForDrawing(7, true);
     directedForDrawing.addEdge(0, 1);
     directedForDrawing.addEdge(1, 3);
@@ -106,10 +107,35 @@ int main()
     gDraw.printCoordinates();
 
     // crtamo graf
-    cout<<"\nDrawing the graph..."<<endl;
+    cout << "\nDrawing the graph..." << endl;
     gDraw.drawGraph();
 
     directedForDrawing.drawInstantly();
+
+    cout << "--------------- ZADATAK 6\n\n";
+
+    Graph undirectedEuler(6, false);
+    undirectedEuler.addEdge(0, 1);
+    undirectedEuler.addEdge(0, 2);
+    undirectedEuler.addEdge(0, 3);
+    undirectedEuler.addEdge(1, 3);
+    undirectedEuler.addEdge(2, 3);
+    undirectedEuler.addEdge(3, 4);
+    undirectedEuler.addEdge(3, 5);
+    undirectedEuler.addEdge(4, 5);
+    undirectedEuler.findEulerCircuit();
+
+    Graph directedEuler(5, true);
+    directedEuler.addEdge(0, 1);
+    directedEuler.addEdge(1, 2);
+    directedEuler.addEdge(2, 0);
+    directedEuler.addEdge(1, 4);
+    directedEuler.addEdge(4, 1);
+    directedEuler.addEdge(0, 3);
+    directedEuler.addEdge(3, 4);
+    directedEuler.findEulerCircuit();
+
+    cout << "--------------- ZADATAK 7\n\n";
 
     return 0;
 }

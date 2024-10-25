@@ -60,3 +60,35 @@ void Graph::printAdjacencyList()
         cout << endl;
     }
 }
+
+void Graph::adjacencyListToAdjacencyMatrix()
+{
+  adjacencyMatrix.resize(numberOfNodes, vector<int>(numberOfNodes));
+
+  for (int i = 0; i < numberOfNodes; i++)
+    adjacencyMatrix[i].resize(numberOfNodes);
+
+  for (int i = 0; i < numberOfNodes; i++)
+  {
+    Node currentNode = adjacencyList[i];
+    for (size_t j = 0; j < currentNode.neighbours.size(); j++)
+    {
+      int neighbourLabel = currentNode.neighbours[j];
+      adjacencyMatrix[i][neighbourLabel] = 1;
+    }
+  }
+}
+
+void Graph::printAdjacencyMatrix()
+{
+  // first row is node labels
+  cout << " ";
+  for (int i = 0; i < numberOfNodes; i++) cout << " " << i;
+  cout << endl;
+  for (int i = 0; i < numberOfNodes; i++)
+  {
+    cout << i << " "; // first column for labels
+    for (int j = 0; j < numberOfNodes; j++) cout << adjacencyMatrix[i][j] << " ";
+    cout << endl;
+  }
+}

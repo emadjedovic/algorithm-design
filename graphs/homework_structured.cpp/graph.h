@@ -12,9 +12,14 @@ ZADAĆA (PREDAVANJA 1-3)
 
 5. Implementirati crtanje grafa. Dati čvorovima koordinate. Linije simulirati recimo sa +++++.
 
+6. Implementirati ispis Eulerove ture (ciklusa). Prvo provjeriti parnost čvorova. Koristiti matricu susjedstva.
+
+7. Implementirati detekciju grana - mostova (grane pretvoriti u čvorove i onda naći artikulacione čvorove).
+
 NAPOMENA: Korišten šablon grafa data na predavanjima, s tim da su izbačene neke stvari koje
 nisu od važnosti ovdje i smatram da je bez njih kod čitljiviji. Npr. izbačena je struktura Edge,
-izbačene su matrica susjedstva i lista grana, kao i njihove pripadajuće konverzije i printanje.
+ lista grana, neke konverzije iz jedne reprezentacije u drugu itd. Korišten chatGPT za smislenije
+ imenovanje varijabli i metoda, generisanje testnih primjera i slično.
 
 Djedović Ema, 6009/M
 
@@ -44,13 +49,14 @@ private:
     int numberOfEdges;
     bool isDirected;
     vector<Node> adjacencyList;
+    vector<vector<int>> adjacencyMatrix;
 
     vector<bool> visited;
     vector<int> previous;
     set<set<int>> cycles;               // da izbjegnemo ponavljanja
     vector<pair<int, int>> coordinates; // za crtanje grafa
 
-    // ZADATAK 3 (pomoćna funkcija)
+    // pomoćne funkcije
     void assignComponentToNeighbours(int start, vector<bool> &visited, Graph &currentComponentGraph);
 
 public:
@@ -58,6 +64,9 @@ public:
     void addEdge(int start, int end);
     void makeAdjacencyList();
     void printAdjacencyList();
+
+    void adjacencyListToAdjacencyMatrix(); // euler
+    void printAdjacencyMatrix(); // euler
 
     void pathFromTo(int start, int target);                                     // ZADATAK 1
     void listNodesAlongThePath(int start, int target, const vector<int> &path); // ZADATAK 1
@@ -72,6 +81,10 @@ public:
     void printCoordinates();
     void drawGraph();
     void drawInstantly(); // sve metode u jednom
+
+    // ZADATAK 6
+    bool hasEulerCircuit();
+    void findEulerCircuit();
 };
 
 #endif
