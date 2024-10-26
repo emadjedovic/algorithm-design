@@ -96,7 +96,11 @@ void Graph::drawGraph() {
                 int startX = min(x1, x2);
                 int endX = max(x1, x2);
                 for (int x = startX + 1; x < endX; ++x) {
-                    grid[y1][x] = "-";
+                    // provjeri je li polje prazno da ne bismo pisali preko čvorova
+                    if(grid[y1][x]==" "){
+                        grid[y1][x] = "-";
+                    }
+                    
                 }
             }
             // vertikalno
@@ -104,6 +108,7 @@ void Graph::drawGraph() {
                 int startY = min(y1, y2);
                 int endY = max(y1, y2);
                 for (int y = startY + 1; y < endY; ++y) {
+                    if(grid[y][x1] == " ")
                     grid[y][x1] = " | ";
                 }
             }
@@ -113,12 +118,14 @@ void Graph::drawGraph() {
                 for (int step = 1; step < steps; ++step) {
                     int x = x1 + step * (x2 - x1) / steps;
                     int y = y1 + step * (y2 - y1) / steps;
+                    if(grid[y][x] == " ")
                     grid[y][x] = ".";
                 }
             }
         }
     }
 
+    cout<<endl;
     for (const auto &row : grid) {
         for (const string& cell : row) {
             cout << cell;

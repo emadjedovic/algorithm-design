@@ -110,29 +110,32 @@ int main()
     cout << "\nDrawing the graph..." << endl;
     gDraw.drawGraph();
 
-    directedForDrawing.drawInstantly();
+    // directedForDrawing.drawInstantly();
 
     cout << "--------------- ZADATAK 6\n\n";
 
+    cout<<"Euler circuit for undirected graph:\n";
     Graph undirectedEuler(6, false);
     undirectedEuler.addEdge(0, 1);
     undirectedEuler.addEdge(0, 2);
-    undirectedEuler.addEdge(0, 3);
     undirectedEuler.addEdge(1, 3);
     undirectedEuler.addEdge(2, 3);
     undirectedEuler.addEdge(3, 4);
     undirectedEuler.addEdge(3, 5);
     undirectedEuler.addEdge(4, 5);
+    undirectedEuler.drawInstantly(); // crtanje
     undirectedEuler.findEulerCircuit();
 
-    Graph directedEuler(5, true);
+    // isti primjer samo usmjeren
+    cout<<"Euler circuit for directed graph:\n";
+    Graph directedEuler(6, true);
     directedEuler.addEdge(0, 1);
-    directedEuler.addEdge(1, 2);
-    directedEuler.addEdge(2, 0);
-    directedEuler.addEdge(1, 4);
-    directedEuler.addEdge(4, 1);
-    directedEuler.addEdge(0, 3);
+    directedEuler.addEdge(1, 3);
     directedEuler.addEdge(3, 4);
+    directedEuler.addEdge(4, 5);
+    directedEuler.addEdge(5, 3);
+    directedEuler.addEdge(3, 2);
+    directedEuler.addEdge(2, 0);
     directedEuler.findEulerCircuit();
 
     cout << "--------------- ZADATAK 7\n\n";
