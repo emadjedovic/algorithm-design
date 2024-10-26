@@ -5,6 +5,7 @@
 #include "zadatak4.cpp"
 #include "zadatak5.cpp"
 #include "zadatak6.cpp"
+#include "zadatak7.cpp"
 
 int main()
 {
@@ -114,7 +115,7 @@ int main()
 
     cout << "--------------- ZADATAK 6\n\n";
 
-    cout<<"Euler circuit for undirected graph:\n";
+    cout << "Euler circuit for undirected graph:\n";
     Graph undirectedEuler(6, false);
     undirectedEuler.addEdge(0, 1);
     undirectedEuler.addEdge(0, 2);
@@ -127,7 +128,7 @@ int main()
     undirectedEuler.findEulerCircuit();
 
     // isti primjer samo usmjeren
-    cout<<"Euler circuit for directed graph:\n";
+    cout << "Euler circuit for directed graph:\n";
     Graph directedEuler(6, true);
     directedEuler.addEdge(0, 1);
     directedEuler.addEdge(1, 3);
@@ -139,6 +140,54 @@ int main()
     directedEuler.findEulerCircuit();
 
     cout << "--------------- ZADATAK 7\n\n";
+
+    cout << "Testing edge to node conversion...\n";
+    Graph edgeToNodeTest(8, false);
+    edgeToNodeTest.addEdge(0, 1);
+    edgeToNodeTest.addEdge(0, 2);
+    edgeToNodeTest.addEdge(1, 3);
+    edgeToNodeTest.addEdge(1, 4);
+    edgeToNodeTest.addEdge(2, 5);
+    edgeToNodeTest.addEdge(3, 5);
+    edgeToNodeTest.addEdge(4, 6);
+    edgeToNodeTest.addEdge(5, 6);
+    edgeToNodeTest.addEdge(5, 7);
+    edgeToNodeTest.addEdge(6, 7);
+
+    cout << "\nOriginal graph:" << endl;
+    edgeToNodeTest.printAdjacencyList();
+
+    Graph edgeGraph = edgeToNodeTest.switchEdgesNodes();
+    cout << "\nConverted graph:" << endl;
+    edgeGraph.printAdjacencyList();
+
+    cout << "\nTesting articulation points...\n";
+
+    Graph graphArt(7, false);
+    graphArt.addEdge(0, 1);
+    graphArt.addEdge(1, 2);
+    graphArt.addEdge(2, 3);
+    graphArt.addEdge(3, 0);
+    graphArt.addEdge(3, 4);
+    graphArt.addEdge(4, 5);
+    graphArt.addEdge(5, 3);
+    graphArt.addEdge(2, 6);
+
+    graphArt.findArticulationPoints();
+
+    cout << "\nFind bridges in a graph...\n";
+
+    Graph detectBridges(7, false);
+    detectBridges.addEdge(0, 1);
+    //detectBridges.addEdge(1, 2);
+    detectBridges.addEdge(2, 3);
+    detectBridges.addEdge(3, 0);
+    detectBridges.addEdge(3, 4);
+    detectBridges.addEdge(4, 5);
+    detectBridges.addEdge(5, 3);
+    detectBridges.addEdge(2, 6);
+
+    detectBridges.findBridges();
 
     return 0;
 }

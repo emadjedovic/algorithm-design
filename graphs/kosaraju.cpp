@@ -13,7 +13,6 @@ struct Node
 {
 	int label;
 	vector<int> neighbours;
-	// constructor
 	Node(int l = -1) : label(l) {}
 };
 

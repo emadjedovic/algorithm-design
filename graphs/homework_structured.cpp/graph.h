@@ -33,6 +33,7 @@ Djedović Ema, 6009/M
 #include <stack>
 #include <queue>
 #include <set>
+#include <map>
 using namespace std;
 
 struct Node
@@ -56,8 +57,18 @@ private:
     set<set<int>> cycles;               // da izbjegnemo ponavljanja
     vector<pair<int, int>> coordinates; // za crtanje grafa
 
-    // pomoćne funkcije
     void assignComponentToNeighbours(int start, vector<bool> &visited, Graph &currentComponentGraph);
+
+    // za artikulacione čvorove
+    vector<int> num;    // redni broj posjete
+    vector<int> low;    // najniži čvor do kojeg možemo doći
+    vector<int> parent; // parent vertices in DFS tree
+    set<int> articulationPoints;
+    void assignNum(int v, int &counter);
+    void assignLow(int v);
+    // mostovi (zadatak 7)
+    map<pair<int, int>, int> edgeToNode;
+    set<pair<int, int>> bridges;
 
 public:
     Graph(int n, bool d = false);
@@ -66,7 +77,7 @@ public:
     void printAdjacencyList();
 
     void adjacencyListToAdjacencyMatrix(); // euler
-    void printAdjacencyMatrix(); // euler
+    void printAdjacencyMatrix();           // euler
 
     void pathFromTo(int start, int target);                                     // ZADATAK 1
     void listNodesAlongThePath(int start, int target, const vector<int> &path); // ZADATAK 1
@@ -85,6 +96,11 @@ public:
     // ZADATAK 6
     bool hasEulerCircuit();
     void findEulerCircuit();
+
+    // ZADATAK 7
+    Graph switchEdgesNodes();
+    void findArticulationPoints();
+    void findBridges();
 };
 
 #endif
