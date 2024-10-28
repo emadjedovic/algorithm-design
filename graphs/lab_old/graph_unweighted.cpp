@@ -3,7 +3,7 @@
 #include <list>
 #include <stack>
 #include <queue>
-#include <algorithm> // for reverse
+#include <algorithm>
 using namespace std;
 
 class Graph
@@ -12,9 +12,11 @@ class Graph
     bool isDirected;
     vector<list<int>> adjacencyList;
 
-    // Helper functions for DFS traversal
+    // preorder + postorder
     void DFSrec_timestamps(int vertex, vector<bool> &visited, vector<pair<int, int>> &timestamps, int &time);
+    // postorder
     void DFSrec_finishingOrder(int vertex, vector<bool> &visited, stack<int> &finishingOrder);
+    // preorder
     void DFSrec_component(int vertex, vector<bool> &visited, list<int> &component);
 
 public:
@@ -23,7 +25,6 @@ public:
         adjacencyList.resize(vertices);
     }
 
-    // Function prototypes
     void addEdge(int source, int destination);
     void BFS(int startVertex = 0);
     void DFS_timestamps(int startVertex = 0);
@@ -79,19 +80,19 @@ void Graph::BFS(int startVertex)
 
 void Graph::DFS_timestamps(int startVertex)
 {
-    vector<pair<int, int>> timestamps(numVertices); // discovery time and finishing time
+    // discovery time and finishing time
+    vector<pair<int, int>> timestamps(numVertices);
     vector<bool> visited(numVertices, false);
     int time = 0;
 
     DFSrec_timestamps(startVertex, visited, timestamps, time);
 
     for (int i = 0; i < numVertices; i++)
-    {
         cout << "Vertex " << i << ": Discovery time = " << timestamps[i].first
              << ", Finish time = " << timestamps[i].second << endl;
-    }
 }
 
+// preorder for discovery time, postorder for finishing time
 void Graph::DFSrec_timestamps(int vertex, vector<bool> &visited, vector<pair<int, int>> &timestamps, int &time)
 {
     visited[vertex] = true;
@@ -100,12 +101,9 @@ void Graph::DFSrec_timestamps(int vertex, vector<bool> &visited, vector<pair<int
     cout << "Visited vertex " << vertex << endl;
 
     for (int neighbor : adjacencyList[vertex])
-    {
         if (!visited[neighbor])
-        {
             DFSrec_timestamps(neighbor, visited, timestamps, time);
-        }
-    }
+
     timestamps[vertex].second = time++; // Record finishing time
 }
 
@@ -114,6 +112,7 @@ void Graph::distancesFrom(int startVertex)
 {
     vector<int> distances(numVertices, -1);
     distances[startVertex] = 0;
+
     queue<int> queue;
     queue.push(startVertex);
 
@@ -125,7 +124,7 @@ void Graph::distancesFrom(int startVertex)
         for (int neighbor : adjacencyList[currentVertex])
         {
             if (distances[neighbor] == -1)
-            {
+            { // not visited
                 distances[neighbor] = distances[currentVertex] + 1;
                 queue.push(neighbor);
             }
@@ -133,11 +132,10 @@ void Graph::distancesFrom(int startVertex)
     }
 
     for (int i = 0; i < numVertices; i++)
-    {
         cout << "Vertex " << i << ": Distance from start = " << distances[i] << endl;
-    }
 }
 
+// bfs
 vector<int> Graph::pathFromTo(int source, int destination)
 {
     vector<pair<int, int>> distanceAndPrevious(numVertices, {-1, -1});
@@ -180,91 +178,74 @@ vector<int> Graph::pathFromTo(int source, int destination)
     return path;
 }
 
+// postorder
+void Graph::topSortRec(int vertex, vector<bool> &visited, list<int> &result)
+{
+    visited[vertex] = true;
+
+    for (int neighbor : adjacencyList[vertex])
+        if (!visited[neighbor])
+            topSortRec(neighbor, visited, result);
+
+    result.push_front(vertex);
+}
+
 list<int> Graph::topologicalSort()
 {
     list<int> sortedOrder;
     vector<bool> visited(numVertices, false);
 
     for (int i = 0; i < numVertices; i++)
-    {
         if (!visited[i])
             topSortRec(i, visited, sortedOrder);
-    }
 
     return sortedOrder;
 }
 
-void Graph::topSortRec(int vertex, vector<bool> &visited, list<int> &result)
-{
-    visited[vertex] = true;
-
-    for (int neighbor : adjacencyList[vertex])
-    {
-        if (!visited[neighbor])
-        {
-            topSortRec(neighbor, visited, result);
-        }
-    }
-    result.push_front(vertex);
-}
-
-// finishing order is related to postorder
+// postorder
 void Graph::DFSrec_finishingOrder(int vertex, vector<bool> &visited, stack<int> &finishingOrder)
 {
     visited[vertex] = true;
 
     for (int neighbor : adjacencyList[vertex])
-    {
         if (!visited[neighbor])
-        {
             DFSrec_finishingOrder(neighbor, visited, finishingOrder);
-        }
-    }
 
-    finishingOrder.push(vertex); // Push the vertex to the stack based on its finishing time
+    finishingOrder.push(vertex);
 }
 
+// preorder
 void Graph::DFSrec_component(int vertex, vector<bool> &visited, list<int> &component)
 {
     visited[vertex] = true;
     component.push_back(vertex);
 
     for (int neighbor : adjacencyList[vertex])
-    {
         if (!visited[neighbor])
-        {
             DFSrec_component(neighbor, visited, component);
-        }
-    }
 }
 
 list<list<int>> Graph::stronglyConnectedComponents()
 {
-    stack<int> finishingOrder; // postorder
+    // STEP 1: Postorder on original graph
+    stack<int> finishingOrder;
     vector<bool> visited(numVertices, false);
 
     for (int i = 0; i < numVertices; i++)
-    {
         if (!visited[i])
-        {
             DFSrec_finishingOrder(i, visited, finishingOrder);
-        }
-    }
 
-    // Create the transpose graph (reverse graph)
+    // STEP 2: Create reversed graph
     Graph transposeGraph(numVertices, true);
     for (int i = 0; i < numVertices; i++)
-    {
         for (int neighbor : adjacencyList[i])
-        {
             transposeGraph.addEdge(neighbor, i);
-        }
-    }
 
-    // Perform DFS on the transpose graph in the order of finishing times
+    // STEP 3: Postorder (could do preorder as well) on REVERESED
     list<list<int>> components;
     visited = vector<bool>(numVertices, false); // Reset visited array
 
+    // use this order
     while (!finishingOrder.empty())
     {
         int currentVertex = finishingOrder.top();
@@ -273,9 +254,9 @@ list<list<int>> Graph::stronglyConnectedComponents()
         if (!visited[currentVertex])
         {
             list<int> component;
-            // starting from current vertex, push it into the newly created component, as well as all its neighbours etc.
-            // this is a strong component
+            // assigns this component to all neighbours as well (recursively):
             transposeGraph.DFSrec_component(currentVertex, visited, component);
+            // added all nodes to one component...
             components.push_back(component);
         }
     }
@@ -283,12 +264,10 @@ list<list<int>> Graph::stronglyConnectedComponents()
     return components;
 }
 
-// Test the graph implementation with a small example
 int main()
 {
-    Graph graph(6, true); // Create a directed graph with 6 vertices
+    Graph graph(6, true);
 
-    // Add edges
     graph.addEdge(0, 1);
     graph.addEdge(1, 2);
     graph.addEdge(2, 0);
@@ -309,9 +288,7 @@ int main()
     cout << "\nTopological Sort:" << endl;
     list<int> topSortOrder = graph.topologicalSort();
     for (int vertex : topSortOrder)
-    {
         cout << vertex << " ";
-    }
     cout << endl;
 
     cout << "\nStrongly Connected Components:" << endl;
@@ -321,9 +298,7 @@ int main()
     {
         cout << "Component " << i++ << ": ";
         for (int vertex : component)
-        {
             cout << vertex << " ";
-        }
         cout << endl;
     }
 

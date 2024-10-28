@@ -16,56 +16,18 @@ bool exactlyTwoOpenings(const vector<vector<char>> &maze)
     int numRows = maze.size();
     int numCols = maze[0].size();
 
-    // edge cases
-
-    if (numRows == 1)
-    {
-        int dots = 0;
-        for (int i = 0; i < numCols; i++)
-        {
-            if (maze[0][i] == '.')
-                dots++;
-            if (dots > 2)
-                return false;
-        }
-        if (dots < 2)
-            return false;
-        return true;
-    }
-
-    if (numCols == 1)
-    {
-        int dots = 0;
-        for (int i = 0; i < numRows; i++)
-        {
-            if (maze[i][0] == '.')
-                dots++;
-            if (dots > 2)
-                return false;
-        }
-        if (dots < 2)
-            return false;
-        return true;
-    }
-
     // subtract total dots and inner dots
     int total_dots = 0;
     int inner_dots = 0;
     for (int i = 0; i < numRows; i++)
     {
         for (int j = 0; j < numCols; j++)
-        {
             if (maze[i][j] == '.')
+            {
                 total_dots++;
-        }
-    }
-    for (int i = 1; i < numRows - 1; i++)
-    {
-        for (int j = 1; j < numCols - 1; j++)
-        {
-            if (maze[i][j] == '.')
-                inner_dots++;
-        }
+                if (i > 0 && i < (numRows - 1) && j > 0 && j < (numCols - 1))
+                    inner_dots++;
+            }
     }
 
     return ((total_dots - inner_dots) == 2);
@@ -184,9 +146,7 @@ bool DFS(const vector<vector<char>> &maze, int startRow, int startCol, int targe
 {
     // If the current cell is the exit, return true
     if (startRow == targetRow && startCol == targetCol)
-    {
         return true;
-    }
 
     // Mark the current cell as visited
     visited[startRow][startCol] = true;
@@ -205,9 +165,7 @@ bool DFS(const vector<vector<char>> &maze, int startRow, int startCol, int targe
         if (isValidMove(newRow, newCol, maze, visited))
         {
             if (DFS(maze, newRow, newCol, targetRow, targetCol, visited))
-            {
                 return true;
-            }
         }
     }
 
@@ -229,19 +187,9 @@ bool hasFeasiblePath(const vector<vector<char>> &maze)
 
 bool isValid(const vector<vector<char>> &maze)
 {
-    // check exactly two openings
-    bool firstCondition = exactlyTwoOpenings(maze);
-
-    // Check that there exists at least one feasible path
-    if (!firstCondition)
-    {
+    if (!exactlyTwoOpenings(maze))
         return false;
-    }
-
-    // check there exists at least one feasible path
-    bool secondCondition = hasFeasiblePath(maze);
-
-    return secondCondition;
+    return hasFeasiblePath(maze);
 }
 
 int main()

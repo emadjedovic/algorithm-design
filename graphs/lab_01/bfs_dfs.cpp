@@ -5,14 +5,13 @@ using namespace std;
 
 
 void BFS(const vector<vector<int>> graph){
-    // track queued
-    vector<bool> queued(graph.size(), false);
+    vector<bool> visited(graph.size(), false);
 
     queue<int> visitingQueue;
-    visitingQueue.push(0); // start
-    queued[0] = true;
+    visitingQueue.push(0);
+    visited[0] = true;
 
-    // no need for helper function because this is iterative
+    // iterative
     while(!visitingQueue.empty()) {
         int currentNode = visitingQueue.front();
         vector<int> neighbours = graph[currentNode];
@@ -20,19 +19,16 @@ void BFS(const vector<vector<int>> graph){
         for (size_t i = 0; i < neighbours.size(); i++)
         {
             // don't add nodes that are already added
-            if(!queued[neighbours[i]]){
+            if(!visited[neighbours[i]]){
                 visitingQueue.push(neighbours[i]);
-                queued[neighbours[i]] = true;
+                visited[neighbours[i]] = true;
             }
         }
 
         // do something with the current node
         cout<<currentNode<<" ";
         visitingQueue.pop();
-        
-
     }
-
 }
 
 void DFS_helper(const vector<vector<int>> graph, int start, vector<int>& visited){
@@ -45,19 +41,16 @@ void DFS_helper(const vector<vector<int>> graph, int start, vector<int>& visited
             // no unvisited neighbours left
         }
     }
-
 }
 
 void DFS(const vector<vector<int>> graph){
-    // track visited
     vector<int> visited(graph.size(), false);
     DFS_helper(graph, 0, visited);
-    
 }
 
 int main()
 {
-    // using adjacency list
+    // adjacency list
     vector<vector<int>> graph {
         {1,2,5}, // 0
         {0,2,3}, // 1
