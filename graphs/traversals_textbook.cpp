@@ -10,16 +10,17 @@ struct Node
     vector<Node *> adjacent_vertices;
     int label;
 
-    void depth_first_traversal_helper(unordered_map<Node *, Node *> &previous)
+    void dfs_helper(unordered_map<Node *, Node *> &previous)
     {
         // call dfs on one of this node's neighbours
         for (Node *neighbour : adjacent_vertices)
         {
+            // check if not already visited
             if (previous.find(neighbour) == previous.end())
             {
-                // not already visited
+                // not visited
                 previous.insert({neighbour, this});
-                neighbour->depth_first_traversal_helper(previous);
+                neighbour->dfs_helper(previous);
             }
         }
     }
@@ -44,9 +45,7 @@ public:
     ~Graph()
     {
         for (Node *node : adjacencyList)
-        {
             delete node;
-        }
     }
     void add_edge(int from, int to)
     {
@@ -55,9 +54,9 @@ public:
         startNode->adjacent_vertices.push_back(endNode);
     }
 
-    void breadth_first_traversal(Node *first)
+    void bfs(Node *first)
     {
-        unordered_map<Node *, int> distances;
+        unordered_map<Node *, int> distances; // instead of previous for dfs
         distances.insert({first, 0});
         queue<Node *> queue;
         queue.push(first);
@@ -70,6 +69,7 @@ public:
 
             for (Node *neighbour : node->adjacent_vertices)
             {
+                // check if not already visited
                 if (distances.find(neighbour) == distances.end())
                 {
                     distances.insert({neighbour, nodeDistance + 1});
@@ -79,7 +79,7 @@ public:
         }
     }
 
-    void depth_first_traversal(Node *first)
+    void dfs_classic(Node *first)
     {
         unordered_map<Node *, Node *> previous;
         previous.insert({first, nullptr});
@@ -93,8 +93,10 @@ public:
 
             for (Node *neighbour : node->adjacent_vertices)
             {
+                // check if not already visited
                 if (previous.find(neighbour) == previous.end())
                 {
+                    // not visited
                     previous.insert({neighbour, node});
                     stack.push(neighbour);
                 }
@@ -102,11 +104,12 @@ public:
         }
     }
 
-    void depth_first_traversal_recursive(Node *first)
+    void dfs_recursive(Node *first)
     {
+        // here we keep track of visited at the same time
         unordered_map<Node *, Node *> previous;
         previous.insert({first, nullptr});
-        first->depth_first_traversal_helper(previous);
+        first->dfs_helper(previous);
     }
 };
 

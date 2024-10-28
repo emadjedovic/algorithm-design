@@ -30,8 +30,16 @@ private:
   vector<vector<int>> adjacencyMatrix;
   vector<Edge> edgeList;
 
+  vector<bool> visited;
+  void DFS_recursive_helper(int start);
+
 public:
-  Graph(int n) : numberOfNodes(n) {};
+  Graph(int n) : numberOfNodes(n)
+  {
+    adjacencyList.resize(n);
+    adjacencyMatrix.resize(n, vector<int>(n));
+    visited.resize(n);
+  };
 
   void addEdge(Edge);
   void addNode(Node);
@@ -44,6 +52,11 @@ public:
 
   void adjacencyListToEdgeList();
   void adjacencyListToAdjacencyMatrix();
+
+  void DFS_classic(int start);
+  void BFS_classic(int start);
+  // void BFS(int start);
+  void DFS_recursive(int start);
 };
 
 void Graph::addEdge(Edge e)
@@ -61,6 +74,7 @@ void Graph::addNode(Node v)
 
 void Graph::makeAdjacencyList()
 {
+  // erases all elements, reducing size to zero
   adjacencyList.clear();
 
   for (int i = 0; i < numberOfNodes; i++)
@@ -82,7 +96,6 @@ void Graph::makeAdjacencyList()
       cin >> label;
       newNode.neighbours.push_back(label);
     }
-
     adjacencyList.push_back(newNode);
   }
 }
@@ -123,7 +136,6 @@ void Graph::adjacencyListToEdgeList()
       edgeList.push_back(Edge(i, endingNodeLabel));
     }
   }
-
   numberOfEdges = edgeList.size();
 }
 
@@ -145,9 +157,7 @@ void Graph::printAdjacencyList()
 void Graph::printEdgeList()
 {
   for (int i = 0; i < numberOfEdges; i++)
-  {
     edgeList[i].printEdge();
-  }
 }
 
 void Graph::printAdjacencyMatrix()
@@ -155,18 +165,86 @@ void Graph::printAdjacencyMatrix()
   // first row is node labels
   cout << " ";
   for (int i = 0; i < numberOfNodes; i++)
-  {
     cout << " " << i;
-  }
   cout << endl;
   for (int i = 0; i < numberOfNodes; i++)
   {
     cout << i << " "; // first column for labels
     for (int j = 0; j < numberOfNodes; j++)
-    {
       cout << adjacencyMatrix[i][j] << " ";
-    }
     cout << endl;
+  }
+}
+
+// BFS & DFS
+
+void Graph::DFS_classic(int start)
+{
+  visited.resize(numberOfNodes, false);
+  // use stack
+  stack<int> s;
+  s.push(start);
+  while (!s.empty())
+  {
+    int nodeLabel = s.top();
+    s.pop(); // takes off the stack
+    visited[nodeLabel] = true;
+    // do something with the node
+    cout << "Visited node: " << nodeLabel << endl;
+    // push the neighbours onto the stack
+    vector<int> neighbours = adjacencyList[nodeLabel].neighbours;
+    for (int neighbour : neighbours)
+    {
+      if (!visited[neighbour])
+        s.push(neighbour);
+    }
+  }
+}
+
+void Graph::DFS_recursive_helper(int start)
+{
+  visited[start] = true;
+  cout << "Visited node: " << start << endl;
+
+  vector<int> neighbours = adjacencyList[start].neighbours;
+  for (int neighbour : neighbours)
+  {
+    if (!visited[neighbour])
+    {
+      cout << "Passing the edge (" << start << ", " << neighbour << ")" << endl;
+      DFS_recursive_helper(neighbour);
+    }
+  }
+}
+
+void Graph::DFS_recursive(int start)
+{
+  visited.resize(numberOfNodes, false);
+  DFS_recursive_helper(start);
+}
+
+void Graph::BFS_classic(int start)
+{
+  visited.resize(numberOfNodes, false);
+  queue<int> q;
+  q.push(start);
+  while (!q.empty())
+  {
+    int nodeLabel = q.front();
+    q.pop();
+    // do something with the node
+    if (!visited[nodeLabel])
+    {
+      visited[nodeLabel] = true;
+      cout << "Visited node: " << nodeLabel << endl;
+      // push neighbours into queue
+      vector<int> neighbours = adjacencyList[nodeLabel].neighbours;
+      for (int neighbour : neighbours)
+      {
+        if (!visited[neighbour])
+          q.push(neighbour);
+      }
+    }
   }
 }
 
@@ -193,6 +271,9 @@ int main()
   cout << "\nEdge list\n";
   graph.adjacencyListToEdgeList();
   graph.printEdgeList();
+
+  cout << "BFS from node 0: " << endl;
+  graph.BFS_classic(0);
 
   return 0;
 }
