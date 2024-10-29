@@ -1,3 +1,5 @@
+// the minimum number of moves a knight takes to reach from one square to another square of a chess board (8 × 8)
+
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -14,16 +16,15 @@ bool outOfBoard(const string &destination)
     return false;
 }
 
-// this means the node is eligable to be a neighbour
+// al the fields the knight can move to
 vector<string> getNeighbours(const string &position)
 {
     vector<string> result;
 
-    // x,y moves, 2,-1 means two steps right, one step down
+    // (2,-1) means two steps right, one step down
     vector<pair<int, int>> moves = {
         {2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2}};
 
-    
     // for each move create a string destination
     for (const auto &move : moves)
     {
@@ -38,8 +39,6 @@ vector<string> getNeighbours(const string &position)
 
     return result;
 }
-
-
 
 void doubleBFS(const string &start, const string &destination, int &levelFromStart, int &levelFromDestination)
 {
@@ -56,7 +55,7 @@ void doubleBFS(const string &start, const string &destination, int &levelFromSta
 
     while (!bfsStart.empty() && !bfsDest.empty())
     {
-        string currentNodeS = bfsStart.front().first; // add neighbours to bfsStart
+        string currentNodeS = bfsStart.front().first;
         int currentDistanceS = bfsStart.front().second;
         bfsStart.pop();
 
@@ -74,7 +73,7 @@ void doubleBFS(const string &start, const string &destination, int &levelFromSta
             visitedStart[n] = true;
         }
 
-        string currentNodeD = bfsDest.front().first; // add neighbours to bfsDest
+        string currentNodeD = bfsDest.front().first;
         int currentDistanceD = bfsDest.front().second;
         bfsDest.pop();
 
@@ -115,7 +114,7 @@ int main()
         string start, destination;
         cout << "Input start and destination (from a1 to h8): ";
         cin >> start >> destination;
-        cout << "Minimal number of knight moves required: " << minKnightMoves(start, destination)<<endl;
+        cout << "Minimal number of knight moves required: " << minKnightMoves(start, destination) << endl;
     }
     return 0;
 }

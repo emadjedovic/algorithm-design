@@ -8,15 +8,13 @@ void Graph::topologicalSort()
 
     // kreiramo kopiju jer ne želimo izmijeniti originalni graf
     vector<int> tempIndegree(numberOfNodes);
-    for (int i = 0; i < numberOfNodes; ++i) {
+    for (int i = 0; i < numberOfNodes; ++i)
         tempIndegree[i] = adjacencyList[i].indegree;
-    }
 
     // naći sve čvorove ulaznog stepena 0
-    for (int i = 0; i < numberOfNodes; i++) {
+    for (int i = 0; i < numberOfNodes; i++)
         if (tempIndegree[i] == 0)
             zeroIndegreeNodes.push(i);
-    }
 
     // konstruiramo topološki redoslijed
     while (!zeroIndegreeNodes.empty())
@@ -46,4 +44,3 @@ void Graph::topologicalSort()
         cout << i << " ";
     cout << endl;
 }
-

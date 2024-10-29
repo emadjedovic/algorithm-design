@@ -20,10 +20,8 @@ vector<int> topologicalSort(vector<vector<int>> adjList)
 
     set<int> zeroIndegreeNodes;
     for (int i = 0; i < numberOfNodes; i++)
-    {
         if (indegrees[i] == 0)
             zeroIndegreeNodes.insert(i);
-    }
 
     // push nodes with indegree of 0 to result...
     while (!zeroIndegreeNodes.empty())
@@ -50,15 +48,12 @@ vector<int> topologicalSort(vector<vector<int>> adjList)
 
 void adjListFromWeighted(const vector<vector<pair<int, double>>> &adjListWeighted, vector<vector<int>> &result)
 {
-
     result.resize(adjListWeighted.size());
     for (size_t i = 0; i < adjListWeighted.size(); i++)
     {
         vector<pair<int, double>> neighbours = adjListWeighted[i];
         for (const pair<int, double> &neighbour : neighbours)
-        {
             result[i].push_back(neighbour.first);
-        }
     }
 }
 
@@ -95,10 +90,9 @@ vector<double> distanceFrom(int node, const vector<vector<pair<int, double>>> &a
         // visit neighbours - distance 1 from currentNode
         vector<pair<int, double>> neighbours = adjListWeighted[currentNode];
         for (pair<int, double> neighbour : neighbours)
-        {
             distances[neighbour.first] = distances[currentNode] + neighbour.second;
-        }
     }
+
     return distances;
 }
 
@@ -128,9 +122,9 @@ int main()
 
     vector<double> result2 = distanceFrom(4, weightedGraph);
     cout << "Testing shortest distance with weights...\n";
-    cout<< "Printing distances from node 4:\n";
+    cout << "Printing distances from node 4:\n";
     for (double d : result2)
-        cout << d <<endl;
+        cout << d << endl;
 
     cout << endl;
 

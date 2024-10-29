@@ -31,15 +31,12 @@ vector<int> findOrder(int numCourses, const vector<vector<int>> &prerequisites)
     vector<int> topSort;
     vector<int> indegrees(numCourses, 0);
     for (vector<int> edge : prerequisites)
-    {
         indegrees[edge[0]]++;
-    }
+
     set<int> zeroIndegreeNodes;
     for (int i = 0; i < numCourses; i++)
-    {
         if (indegrees[i] == 0)
             zeroIndegreeNodes.insert(i);
-    }
 
     while (!zeroIndegreeNodes.empty())
     {

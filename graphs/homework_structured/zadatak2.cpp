@@ -9,9 +9,7 @@ void Graph::printCycles()
     {
         cout << "CYCLE #" << cycle_index << ": { ";
         for (int node : cycle)
-        {
             cout << node << " ";
-        }
         cout << "}\n";
         cycle_index++;
     }
@@ -32,7 +30,6 @@ void Graph::cycle_detection_undirected()
         s.pop();
 
         visited[nodeLabel] = true;
-        //cout << "Visited node: " << nodeLabel << endl;
 
         // stavljamo susjede na stack i updateujemo vektor prethodnika
         for (int neighbour : adjacencyList[nodeLabel].neighbours)
@@ -46,7 +43,6 @@ void Graph::cycle_detection_undirected()
             {
                 if(neighbour==previous[nodeLabel]) continue;
                 // naišli na već posjećen čvor
-                //cout << "Encountered already visited node: " << neighbour<<endl;
                 set<int> cycle;
                 cycle.insert(neighbour);
                 cycle.insert(nodeLabel);

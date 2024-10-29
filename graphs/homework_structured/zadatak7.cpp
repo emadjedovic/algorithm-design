@@ -7,19 +7,15 @@ Graph Graph::switchEdgesNodes()
     // koristimo atribut map<pair<int, int>, int> edgeToNode
     // mapa grana - čvor, neophodno prije nego nađemo koje grane dijele čvor u originalnom grafu
 
-    int edgesMappedToNodes = 0; // indeksi čvorova u edgeToNode
+    int edgesMappedToNodes = 0; // indeksi novonastalih čvorova od grana
 
     // za svaku granu u originalnom grafu...
     for (int i = 0; i < numberOfNodes; i++)
     {
         vector<int> neighbours = adjacencyList[i].neighbours;
         for (int neighbor : neighbours)
-        {
             if (i < neighbor || isDirected)
-            {
                 edgeToNode[{i, neighbor}] = edgesMappedToNodes++;
-            }
-        }
     }
 
     // dodajemo grane i čvorove u instancu klase Graph
@@ -50,27 +46,29 @@ Graph Graph::switchEdgesNodes()
 }
 
 // redoslijed kojim obilazimo čvorove dfsom
-void Graph::assignNum(int v, int& counter) {
+void Graph::assignNum(int v, int &counter)
+{
     num[v] = counter++;
     visited[v] = true;
 
-    
-    for (int w : adjacencyList[v].neighbours) {
-        if (!visited[w]) {
+    for (int w : adjacencyList[v].neighbours)
+    {
+        if (!visited[w])
+        {
             parent[w] = v;
             assignNum(w, counter);
-            
+
             low[v] = min(low[v], low[w]);
-            
-            if (parent[v] != -1 && low[w] >= num[v]) {
+
+            if (parent[v] != -1 && low[w] >= num[v])
                 articulationPoints.insert(v);
-            }
-            
-            if (parent[v] == -1) {
+
+            if (parent[v] == -1)
                 articulationPoints.insert(v);
-            }
-        } else if (w != parent[v]) { 
-            // Update `low` for back edges
+        }
+        else if (w != parent[v])
+        {
+            // Update low for back edges
             low[v] = min(low[v], num[w]);
         }
     }
@@ -108,13 +106,11 @@ void Graph::findArticulationPoints()
 
     int counter = 0;
     for (int v = 0; v < numberOfNodes; ++v)
-    {
         if (!visited[v])
         {
             assignNum(v, counter);
             assignLow(v);
         }
-    }
 
     /*
         cout<<"\nnums: ";
@@ -127,29 +123,23 @@ void Graph::findArticulationPoints()
     // ispisujemo sve
     cout << "Articulation points: { ";
     for (int ap : articulationPoints)
-    {
         cout << ap << " ";
-    }
-    cout << "}"<<endl;
+    cout << "}" << endl;
 }
 
-void Graph::findBridges() {
+void Graph::findBridges()
+{
     bridges.clear();
     Graph convertedGraph = switchEdgesNodes();
 
     convertedGraph.findArticulationPoints();
 
-    for (int ap : convertedGraph.articulationPoints) {
-        for (const auto& edge : edgeToNode) {
-            if (edge.second == ap) {
+    for (int ap : convertedGraph.articulationPoints)
+        for (const auto &edge : edgeToNode)
+            if (edge.second == ap)
                 bridges.insert(edge.first);
-            }
-        }
-    }
 
     cout << "Bridges:\n";
-    for (const auto& edge : bridges) {
+    for (const auto &edge : bridges)
         cout << "(" << edge.first << ", " << edge.second << ")" << endl;
-    }
 }
-

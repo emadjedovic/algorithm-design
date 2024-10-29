@@ -27,25 +27,20 @@ void Graph::pathFromTo(int start, int target)
     {
         int nodeLabel = s.top();
         visited[nodeLabel] = true;
-        //cout << "Visited node: " << nodeLabel << endl;
         s.pop();
 
         for (int neighbour : adjacencyList[nodeLabel].neighbours)
         {
-            //cout << "Visited node: " << neighbour << endl;
+            previous[neighbour] = nodeLabel;
             if (neighbour == target)
             {
                 // dosegli smo čvor koji smo željeli
                 // koristimo vektor previous da ispišemo cijeli put koji smo prešli do cilja
-                previous[neighbour] = nodeLabel;
                 listNodesAlongThePath(start, target, previous);
                 return;
             }
             if (!visited[neighbour])
-            {
                 s.push(neighbour);
-                previous[neighbour] = nodeLabel;
-            }
         }
     }
     cout << "Path does not exits." << endl;
