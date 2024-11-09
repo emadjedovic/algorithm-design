@@ -1,12 +1,12 @@
 #include <iostream>
 #include <vector>
 #include <list>
+#include <set>
 #include <utility>
 using namespace std;
 
 class GraphWeighted
 {
-
     bool isDirected;
     int numNodes;
     vector<list<pair<int, double>>> adjacencyList;
@@ -20,7 +20,7 @@ public:
     void addEdge(int start, int end, double weight);
     vector<double> DijkstraSlow(int start);
     vector<double> DijkstraFast(int start);
-    pair<bool, vector<double>> BellmanFord(int something);
+    pair<bool, vector<double>> BellmanFord(int start);
     pair<double, vector<pair<int, int>>> Prim();
     pair<double, vector<pair<int, int>>> Kruskal();
     double maxFlow(int start, int end);
@@ -61,6 +61,127 @@ public:
     }
 };
 
+void GraphWeighted::addEdge(int start, int end, double weight)
+{
+    adjacencyList[start].push_back({end, weight});
+    if (!isDirected)
+        adjacencyList[end].push_back({start, weight});
+}
+
+pair<bool, vector<double>> GraphWeighted::BellmanFord(int start)
+{
+    // all infinite distances
+    vector<double> distances(numNodes, INT32_MAX);
+    distances[start] = 0;
+
+    int numEdges = numNodes - 1;
+    // edge relaxation
+    for (int i = 0; i < numEdges; i++)
+    {
+        for (int j = 0; j < numNodes; j++)
+        {
+            for (auto neighbour : adjacencyList[j])
+            {
+                if (distances[neighbour.first] > distances[j] + neighbour.second)
+                {
+                    distances[neighbour.first] = distances[j] + neighbour.second;
+                }
+            }
+        }
+    }
+
+    for (int i = 0; i < numNodes; i++)
+    {
+        for (auto neighbour : adjacencyList[i])
+        {
+            if (distances[neighbour.first] > distances[i] + neighbour.second)
+            {
+                // relaxation failed
+                return {false, distances};
+            }
+        }
+    }
+
+    return {true, distances};
+}
+
+vector<double> GraphWeighted::DijkstraSlow(int start)
+{
+    vector<bool> done(numNodes, false);
+    vector<double> distances(numNodes, INT32_MAX);
+    done[start] = true;
+    distances[start] = 0;
+    int current = start;
+
+    int numEdges = numNodes - 1;
+    for (int i = 0; i < numEdges; i++)
+    {
+        for (auto neighbour : adjacencyList[i])
+        {
+            // edge relaxation
+            if (!done[neighbour.first] && distances[current] + neighbour.second < distances[neighbour.first])
+            {
+                distances[neighbour.first] = distances[current] + neighbour.second;
+            }
+        }
+
+        pair<double, int> minimum = {INT32_MAX, -1};
+        for (int j = 0; j < numNodes; j++)
+        {
+            if (!done[j] && distances[j] < minimum.first)
+                minimum = {distances[j], j};
+        }
+
+        current = minimum.second;
+        done[current] = true;
+    }
+
+    return distances;
+}
+
+vector<double> GraphWeighted::DijkstraFast(int start)
+{
+    vector<bool> done(numNodes, false);
+    vector<double> distances(numNodes, INT32_MAX);
+    done[start] = true;
+    distances[start] = 0;
+    int current = start;
+    set<pair<double, int>> tree;
+
+    int numEdges = numNodes - 1;
+    for (int i = 0; i < numEdges; i++)
+    {
+        for (auto neighbour : adjacencyList[current])
+        {
+            if (!done[neighbour.first] && distances[current] + neighbour.second < distances[neighbour.first])
+            {
+                if (tree.find({distances[neighbour.first], neighbour.second}) != tree.end())
+                {
+                    tree.erase({distances[neighbour.first], neighbour.second});
+                }
+
+                distances[neighbour.first] = distances[current] + neighbour.second;
+                tree.insert({distances[neighbour.first], neighbour.second});
+            }
+        }
+
+        current = tree.begin()->second;
+        tree.erase(tree.begin());
+        done[current] = true;
+    }
+    return distances;
+}
+
+pair<double, vector<pair<int, int>>> GraphWeighted::Prim()
+{
+    return pair<double, vector<pair<int, int>>>();
+}
+
+pair<double, vector<pair<int, int>>> GraphWeighted::Kruskal()
+{
+    return pair<double, vector<pair<int, int>>>();
+}
+
 int main()
 {
 
@@ -83,12 +204,12 @@ int main()
     vector<double> shortestDistancesFrom = graph1.DijkstraSlow(0);
     for (double i : shortestDistancesFrom)
         cout << i << " ";
-    cout<<endl;
+    cout << endl;
 
     shortestDistancesFrom = graph1.DijkstraFast(0);
     for (double i : shortestDistancesFrom)
         cout << i << " ";
-    cout<<endl;
+    cout << endl;
 
     GraphWeighted graph2(6, true);
     graph2.addEdge(0, 1, 16);
@@ -103,38 +224,4 @@ int main()
     cout << graph2.maxFlow(0, 5);
 
     return 0;
-}
-
-void GraphWeighted::addEdge(int start, int end, double weight)
-{
-}
-
-vector<double> GraphWeighted::DijkstraSlow(int start)
-{
-    return vector<double>();
-}
-
-vector<double> GraphWeighted::DijkstraFast(int start)
-{
-    return vector<double>();
-}
-
-pair<bool, vector<double>> GraphWeighted::BellmanFord(int something)
-{
-    return pair<bool, vector<double>>();
-}
-
-pair<double, vector<pair<int, int>>> GraphWeighted::Prim()
-{
-    return pair<double, vector<pair<int, int>>>();
-}
-
-pair<double, vector<pair<int, int>>> GraphWeighted::Kruskal()
-{
-    return pair<double, vector<pair<int, int>>>();
-}
-
-double GraphWeighted::maxFlow(int start, int end)
-{
-    return 0.0;
 }
