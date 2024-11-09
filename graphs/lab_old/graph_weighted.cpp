@@ -3,6 +3,7 @@
 #include <list>
 #include <set>
 #include <utility>
+#include <algorithm>
 using namespace std;
 
 class GraphWeighted
@@ -174,12 +175,80 @@ vector<double> GraphWeighted::DijkstraFast(int start)
 
 pair<double, vector<pair<int, int>>> GraphWeighted::Prim()
 {
-    return pair<double, vector<pair<int, int>>>();
+    int start = 0;
+    vector<bool> inMST(numNodes, false);           // Track nodes included in MST
+    vector<double> distances(numNodes, INT32_MAX); // Shortest edge to MST
+    vector<int> previous(numNodes, -1);            // Previous node in MST
+
+    distances[start] = 0;
+    set<pair<double, int>> minEdges; // Min-heap by distance
+    minEdges.insert({0, start});
+
+    pair<double, vector<pair<int, int>>> mst{0, vector<pair<int, int>>()};
+
+    while (!minEdges.empty())
+    {
+        // Select edge with minimum weight
+        int current = minEdges.begin()->second;
+        mst.first += minEdges.begin()->first;
+        minEdges.erase(minEdges.begin());
+
+        inMST[current] = true;
+
+        if (previous[current] != -1)
+            mst.second.push_back({previous[current], current});
+
+        // Update distances for adjacent nodes
+        for (auto &neighbor : adjacencyList[current])
+        {
+            int adjNode = neighbor.first;
+            double weight = neighbor.second;
+
+            if (!inMST[adjNode] && weight < distances[adjNode])
+            {
+                // Remove outdated distance if exists
+                minEdges.erase({distances[adjNode], adjNode});
+
+                // Update distance and insert new edge
+                distances[adjNode] = weight;
+                previous[adjNode] = current;
+                minEdges.insert({distances[adjNode], adjNode});
+            }
+        }
+    }
+
+    return mst;
 }
 
 pair<double, vector<pair<int, int>>> GraphWeighted::Kruskal()
 {
-    return pair<double, vector<pair<int, int>>>();
+    vector<pair<double, pair<int, int>>> edges;
+    for (int i = 0; i < numNodes; i++)
+    {
+        for (auto neighbour : adjacencyList[i])
+        {
+            if (i < neighbour.first)
+                edges.push_back({neighbour.second, {i, neighbour.first}});
+        }
+    }
+
+    sort(edges.begin(), edges.end());
+    pair<double, vector<pair<int, int>>> mst{0, vector<pair<int, int>>()};
+    DisjointSets ds(numNodes);
+    int counter = 0;
+    for (int i = 0; i < edges.size(); i++)
+    {
+        if (ds.findSet(edges[i].second.first) != ds.findSet(edges[i].second.second))
+        {
+            ds.unionSets(edges[i].second.first, edges[i].second.second);
+            counter++;
+            mst.first += edges[i].first;
+            mst.second.push_back(edges[i].second);
+        }
+        if (counter == numNodes - 1)
+            break;
+        return mst;
+    }
 }
 
 int main()
