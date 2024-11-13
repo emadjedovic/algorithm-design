@@ -45,7 +45,7 @@ public:
     int findSet(int x)
     {
         if (parents[x] != x)
-            parents[x] = findSet(parents[x]);
+            parents[x] = findSet(parents[x]); // this
         return parents[x];
     }
 

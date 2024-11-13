@@ -16,7 +16,7 @@ public:
             return elementLabel;
         else
         {
-            setIndex[elementLabel] = findSet(setIndex[elementLabel]);
+            setIndex[elementLabel] = findSet(setIndex[elementLabel]); // compression
             return setIndex[elementLabel];
         }
     }
