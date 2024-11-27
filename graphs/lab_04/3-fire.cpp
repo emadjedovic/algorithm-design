@@ -1,4 +1,4 @@
-/* https://codeforces.com/problemset/problem/35/C
+/* codeforces.com/problemset/problem/35/C
 
 N rows with M trees each were planted. The j-th tree in the i-th row would have the coordinates of (i, j). However, the young forest caught fire. We must find the coordinates of the tree that will catch fire last.
 

@@ -1,3 +1,5 @@
+// www.spoj.com/problems/MAKEMAZE/
+
 #include <iostream>
 #include <vector>
 using namespace std;

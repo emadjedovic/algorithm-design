@@ -1,4 +1,4 @@
-// https://codeforces.com/problemset/problem/28/B
+// codeforces.com/problemset/problem/28/B
 
 #include <iostream>
 #include <vector>

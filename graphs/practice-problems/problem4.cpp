@@ -1,4 +1,4 @@
-// https://codeforces.com/contest/1725/problem/M
+// codeforces.com/contest/1725/problem/M
 
 /*
 - a directed graph with N nodes and M edges

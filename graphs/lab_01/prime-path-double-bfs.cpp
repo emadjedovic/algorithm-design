@@ -1,19 +1,3 @@
-/*
-- going from 1033 to 8179 by a path of prime numbers where only one digit is changed from one prime to the next prime
-- the price of a digit is one pound
-- find the cheapest prime path between any two given four-digit primes
-
-EXAMPLE FROM 1033 TO 8179
-1033
-1733
-3733
-3739
-3779
-8779
-8179
-- The cost of this solution is 6 pounds.
-*/
-
 #include <iostream>
 #include <vector>
 #include <cmath>

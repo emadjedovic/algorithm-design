@@ -1,4 +1,4 @@
-// https://codeforces.com/problemset/problem/60/B
+// codeforces.com/problemset/problem/60/B
 
 /*
 The plate can be represented by a parallelepiped k × n × m:

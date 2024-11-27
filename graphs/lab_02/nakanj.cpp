@@ -1,4 +1,4 @@
-// the minimum number of moves a knight takes to reach from one square to another square of a chess board (8 × 8)
+//  www.spoj.com/problems/NAKANJ/
 
 #include <iostream>
 #include <vector>

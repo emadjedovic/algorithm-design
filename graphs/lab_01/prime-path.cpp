@@ -1,135 +1,114 @@
 /*
-- going from 1033 to 8179 by a path of prime numbers where only one digit is changed from one prime to the next prime
-- the price of a digit is one pound
-- find the cheapest prime path between any two given four-digit primes
+www.spoj.com/problems/PPATH/
 
-EXAMPLE FROM 1033 TO 8179
-1033
-1733
-3733
-3739
-3779
-8779
-8179
-- The cost of this solution is 6 pounds.
+- nodes are 4-digit prime numbers
+- two nodes are connected (exists an unweighted undirected edge between them) if they differ in exactly one digit
+- form a graph and use bfs (layer by layer) to find the shortest path between start and target prime
+- start double bfs, one from start prime and one from
+- once the common node is reached we should sum the two numbers to get the total distance
 */
 
 #include <iostream>
 #include <vector>
 #include <cmath>
-#include <queue> // for bfs
+#include <queue>
 using namespace std;
 
-/* solve using bfs shortest path*/
-
-bool isPrime(int p)
+bool isPrime(int n)
 {
-    if (p == 1)
+    if (n == 1)
         return false;
-    if (p == 2)
+    if (n == 2)
         return true;
-    for (int i = 2; i <= sqrt(p); i++)
+    for (int i = 2; i <= sqrt(n); i++)
     {
-        if (p % i == 0)
+        if (n % i == 0)
             return false;
     }
     return true;
 }
 
-// differing in one digit only
-vector<int> findPrimeNeighbours(int node)
+vector<int> getPrimeNeighbours(const int &prime)
 {
-    vector<int> neighbours;
-    string nodeStr = to_string(node);
-    for (int i = 0; i < 4; i++)
+    vector<int> result;
+
+    // change exactly one digit, check if prime
+    string primeString = to_string(prime);
+    int length = primeString.length();
+
+    for (int i = 0; i < length; i++)
     {
-        // save the original digits
-        char originalDigit = nodeStr[i];
-        // loop over all digits
-        for (char newDigit = '0'; newDigit <= '9'; newDigit++)
+        char c = primeString[i];
+        // change this char
+        for (char new_c = '0'; new_c <= '9'; new_c++)
         {
-            if (newDigit == originalDigit)
-                continue;
-            // new neighbour, convert to int and check if prime
-            string newNeighbourStr = nodeStr;
-            newNeighbourStr[i] = newDigit;
-            int newNeighbour = stoi(newNeighbourStr);
-            if (newNeighbour >= 1000 && isPrime(newNeighbour))
+            if (new_c == c)
+                continue; // same digit
+            if (i == 0 && new_c == '0')
+                continue; // first digit
+            string newPrime = primeString;
+            newPrime[i] = new_c;
+            int newPrimeInt = stoi(newPrime);
+            if (isPrime(newPrimeInt))
             {
-                neighbours.push_back(newNeighbour);
+                result.push_back(newPrimeInt);
             }
         }
     }
-    return neighbours;
+
+    return result;
 }
 
-// BFS queue, but checks for targetNode amongst neighbours before continuing to next level
-int DistanceFrom(int startNode, int targetNode)
+int cheapestPrimePath(int firstPrime, int secondPrime)
 {
-    if (startNode == targetNode)
+    if (firstPrime == secondPrime)
         return 0;
 
-    queue<int> visitingQueue;
-    vector<bool> queued(10000, false);
-    vector<int> distances(10000, 0);
+    vector<int> primeDistance;
+    primeDistance.resize(10000000, -1); // hopefully enough for all the nodes
+    primeDistance[firstPrime] = 0;
 
-    visitingQueue.push(startNode);
-    queued[startNode] = true;
+    queue<int> q;
+    vector<int> queued(10000000, false);
+    q.push(firstPrime);
+    queued[firstPrime] = true;
 
-    while (!visitingQueue.empty())
+    while (!q.empty())
     {
-        int currentNode = visitingQueue.front();
-        vector<int> neighbours = findPrimeNeighbours(currentNode);
+        int currentPrime = q.front();
+        q.pop();
+
+        vector<int> neighbours = getPrimeNeighbours(currentPrime);
         for (int neighbour : neighbours)
         {
-            if(!queued[neighbour]) {
-                distances[neighbour] = distances[currentNode] + 1;
-                if (neighbour == targetNode) return distances[neighbour];
-                visitingQueue.push(neighbour);
+            if (!queued[neighbour])
+            {
+                q.push(neighbour);
                 queued[neighbour] = true;
+                int layer = primeDistance[currentPrime] + 1;
+                if (neighbour == secondPrime)
+                {
+                    return layer;
+                }
+                primeDistance[neighbour] = layer;
             }
-            
         }
-
-        visitingQueue.pop();
     }
-    return -1; // target not found
+
+    return -1; // second prime not found
 }
-
-/*
-Input:
-3
-1033 8179
-1373 8017
-1033 1033
-
-Output:
-6
-7
-0
-*/
 
 int main()
 {
-    cout << "Number of test cases: ";
-    int testCases; // at most 100
-    cin >> testCases;
-    vector<int> results(testCases, 36);
-    for (int i = 0; i < testCases; i++)
-    {
-        /* One line with two numbers separated by a blank. */
-        cout << "Old password and the new one: ";
-        int first, second; // four-digit primes
-        cin >> first >> second;
-
-        // store the results
-        results[i] = DistanceFrom(first, second);
-    }
-    // output the results
-    for (int result : results)
-    {
-        cout << result << endl;
-    }
-
+    int firstPrime = 1033;
+    int secondPrime = 1033;
+    int result = cheapestPrimePath(firstPrime, secondPrime);
+    cout << "The cheapest prime path: " << result << endl;
     return 0;
 }
+
+/*
+1033 8179 -- 6
+1373 8017 -- 7
+1033 1033 -- 0
+*/
