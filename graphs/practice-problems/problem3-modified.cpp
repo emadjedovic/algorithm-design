@@ -1,38 +1,3 @@
-// codeforces.com/problemset/problem/60/B
-
-/*
-The plate can be represented by a parallelepiped k × n × m:
-k layers (the first layer is the upper one),
-each of which is a rectangle n × m with
-empty squares ('.') and obstacles ('#').
-
-The water can only be present in the empty squares.
-
-The tap is positioned above the square (x, y) of the first layer,
-it is guaranteed that this square is empty.
-
-Every minute a cubical unit of water falls into the plate.
-
-Find the moment of time when the plate is absolutely full
-and is going to be overfilled in the next moment.
-
-The answer should contain a single number,
-showing in how many minutes the plate will be filled.
-*/
-
-/*
-MY ANSWER (needs review)
-
-- start dfs from node x,y
-- the water enters this point and fills all the holes "." connected to this node
-- water reaches all nodes that are "reachable" from starting node x,y
-- two nodes in the same layer are connected if there exists no obstacle between them
-- two nodes from adjacent layers are connected if they are placed exactly on top of one another (same row and col, one layer up or down)
-- we are looking for the number of nodes reachable from x,y
-- the graph is undirected and unweighted
-
-*/
-
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -51,13 +16,9 @@ class Graph
 
 public:
     vector<vector<vector<char>>> plate;
-    vector<vector<vector<bool>>> visited;
-    // each matrix element has a list of neighbours
-    // neighbours are either "." or "#"
     Graph(int k, int n, int m) : k(k), n(n), m(m)
     {
         plate.resize(k, vector<vector<char>>(n, vector<char>(m)));
-        visited.resize(k, vector<vector<bool>>(n, vector<bool>(m)));
     }
     
     vector<Node> getNeighbours(const Node& node) const
@@ -86,38 +47,31 @@ public:
             {
                 char character = plate[newLayer][newRow][newCol];
                 if(character == '.')
-                {
                     neighbours.push_back(Node(newLayer, newRow, newCol));
-                }
             }
         }
-
         return neighbours;
     }
 };
 
-void DFS(Node node, Graph& graph, vector<Node> &component)
+void DFS(Node node, Graph& graph, int &count)
 {
     // fill the component with connected nodes
-    component.push_back(node);
-    graph.visited[node.layer][node.row][node.col] = true;
+    count++;
+    graph.plate[node.layer][node.row][node.col] = 'v';
     vector<Node> neighbours = graph.getNeighbours(node);
     for (Node n : neighbours)
-    {
-        if (!graph.visited[n.layer][n.row][n.col])
-        {
-            DFS(n, graph, component);
-        }
-    }
+        if (graph.plate[n.layer][n.row][n.col]!='v')
+            DFS(n, graph, count);
 }
 
 int numberOfCubicalUnits(Graph& plate, int x, int y)
 {
     x--;
     y--;
-    vector<Node> component;
-    DFS(Node(0,x,y), plate, component);
-    return component.size();
+    int count=0;
+    DFS(Node(0,x,y), plate, count);
+    return count;
 }
 
 int main()
@@ -196,6 +150,7 @@ _____________
 
 1 2
 output: 7
+_____________
 
 3 3 3
 

@@ -60,7 +60,6 @@ void dijkstra(int start, const vector<vector<Edge>>& adjList, vector<int>& dista
             }
         }
     }
-
 }
 
 vector<int> pTimes(const vector<vector<Edge>>& adjList)

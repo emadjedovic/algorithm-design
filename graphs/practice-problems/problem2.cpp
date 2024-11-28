@@ -28,10 +28,8 @@ void DFS(int node, vector<bool> &visited, const vector<vector<int>> &adjList)
     visited[node] = true;
     vector<int> neighbours = adjList[node];
     for (int n : neighbours)
-    {
         if (!visited[n])
             DFS(n, visited, adjList);
-    }
 }
 
 bool firstReachableFromSecond(int dest, int start, const vector<vector<int>> &adjList)
@@ -40,10 +38,7 @@ bool firstReachableFromSecond(int dest, int start, const vector<vector<int>> &ad
     vector<bool> visited(adjList.size(), false);
     DFS(start, visited, adjList); // populates the visited vector
 
-    if (visited[dest])
-        return true;
-    else
-        return false;
+    return visited[dest];
 }
 
 bool permutationReachable(const vector<int> &init, const vector<int> &perm, const vector<int> &fav)
@@ -72,7 +67,6 @@ bool permutationReachable(const vector<int> &init, const vector<int> &perm, cons
         // moving backward
         if (i - fav[i] >= 0)
         {
-
             adjList[i].push_back(i - fav[i]);
         }
         else
