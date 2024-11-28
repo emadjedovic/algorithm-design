@@ -1,132 +1,126 @@
 #include <iostream>
 #include <vector>
 #include <set>
-#include <limits>
+#include <limits> // For numeric limits
 using namespace std;
 
-vector<int> topologicalSort(vector<vector<int>> adjList)
-{
-    int numberOfNodes = adjList.size();
-    vector<int> result;
+struct Edge {
+    int to;
+    double weight;
+    Edge(int to, double weight) : to(to), weight(weight) {}
+};
 
-    vector<int> indegrees(numberOfNodes, 0);
-    // for each node go through its neighbours
-    for (vector<int> node : adjList)
-    {
-        // increment each neighbour's indegree
-        for (int neighbour : node)
-            indegrees[neighbour]++;
-    }
+// Performs a topological sort on a directed acyclic graph (DAG).
+vector<int> topologicalSort(const vector<vector<Edge>>& graph) {
+    int numNodes = graph.size();
+    vector<int> inDegrees(numNodes, 0);
 
-    set<int> zeroIndegreeNodes;
-    for (int i = 0; i < numberOfNodes; i++)
-        if (indegrees[i] == 0)
-            zeroIndegreeNodes.insert(i);
-
-    // push nodes with indegree of 0 to result...
-    while (!zeroIndegreeNodes.empty())
-    {
-        int nodeToAdd = *zeroIndegreeNodes.begin();
-        result.push_back(nodeToAdd);
-        zeroIndegreeNodes.erase(nodeToAdd);
-        // decrease indegree of its neighbours
-        for (int neighbour : adjList[nodeToAdd])
-        {
-            indegrees[neighbour]--;
-            if (indegrees[neighbour] == 0)
-                zeroIndegreeNodes.insert(neighbour);
+    // Calculate the indegree for each node.
+    for (int i = 0; i < numNodes; i++) {
+        for (const Edge& edge : graph[i]) {
+            inDegrees[edge.to]++;
         }
     }
 
-    if (result.size() != numberOfNodes)
-    {
-        // did not reach all nodes
-        cout << "Topological sort not possible." << endl;
+    // Add nodes with zero indegree to a set (sorted order maintained).
+    set<int> zeroInDegreeNodes;
+    for (int i = 0; i < numNodes; i++) {
+        if (inDegrees[i] == 0) {
+            zeroInDegreeNodes.insert(i);
+        }
     }
-    return result;
+
+    // Perform topological sort.
+    vector<int> sortedOrder;
+    while (!zeroInDegreeNodes.empty()) {
+        int currentNode = *zeroInDegreeNodes.begin();
+        zeroInDegreeNodes.erase(currentNode);
+        sortedOrder.push_back(currentNode);
+
+        // Decrease indegree of neighbors and check for new zero-indegree nodes.
+        for (const Edge& edge : graph[currentNode]) {
+            inDegrees[edge.to]--;
+            if (inDegrees[edge.to] == 0) {
+                zeroInDegreeNodes.insert(edge.to);
+            }
+        }
+    }
+
+    // Check for a cycle (in case the graph is not a DAG).
+    if (sortedOrder.size() != numNodes) {
+        cout << "Topological sort not possible (graph has a cycle)." << endl;
+        return {};
+    }
+
+    return sortedOrder;
 }
 
-void adjListFromWeighted(const vector<vector<pair<int, double>>> &adjListWeighted, vector<vector<int>> &result)
-{
-    result.resize(adjListWeighted.size());
-    for (size_t i = 0; i < adjListWeighted.size(); i++)
-    {
-        vector<pair<int, double>> neighbours = adjListWeighted[i];
-        for (const pair<int, double> &neighbour : neighbours)
-            result[i].push_back(neighbour.first);
-    }
-}
+// Calculates the shortest distances from a given starting node in a DAG.
+vector<double> shortestPathInDAG(int startNode, const vector<vector<Edge>>& graph) {
+    int numNodes = graph.size();
+    vector<double> distances(numNodes, numeric_limits<double>::max());
+    distances[startNode] = 0;
 
-// very large number
-double M = numeric_limits<double>::max();
+    // Get the topological order of nodes.
+    vector<int> topologicalOrder = topologicalSort(graph);
 
-vector<double> distanceFrom(int node, const vector<vector<pair<int, double>>> &adjListWeighted)
-{
-
-    int numberOfNodes = adjListWeighted.size();
-    vector<double> distances(numberOfNodes, M);
-    distances[node] = 0; // start node
-
-    vector<vector<int>> adjListUnweighted;
-    adjListFromWeighted(adjListWeighted, adjListUnweighted);
-
-    // slice this vector so it starts from int node...
-    vector<int> topOrderAll = topologicalSort(adjListUnweighted);
+    // Find the starting position in the topological order.
     int startIndex = -1;
-    for (size_t i = 0; i < topOrderAll.size(); i++)
-    {
-        if (topOrderAll[i] == node)
-        {
+    for (int i = 0; i < numNodes; i++) {
+        if (topologicalOrder[i] == startNode) {
             startIndex = i;
             break;
         }
     }
-    vector<int> topOrder;
-    for (size_t i = startIndex; i < topOrderAll.size(); i++)
-        topOrder.push_back(topOrderAll[i]);
 
-    for (int currentNode : topOrder)
-    {
-        // visit neighbours - distance 1 from currentNode
-        vector<pair<int, double>> neighbours = adjListWeighted[currentNode];
-        for (pair<int, double> neighbour : neighbours)
-            distances[neighbour.first] = distances[currentNode] + neighbour.second;
+    // Process nodes from the starting position onwards.
+    for (int i = startIndex; i < numNodes; i++) {
+        int currentNode = topologicalOrder[i];
+        for (const Edge& edge : graph[currentNode]) {
+            if (distances[currentNode] != numeric_limits<double>::max()) {
+                distances[edge.to] = min(distances[edge.to], distances[currentNode] + edge.weight);
+            }
+        }
     }
 
     return distances;
 }
 
-int main()
-{
-    vector<vector<int>> testingTopSort({{5, 4}, {8}, {}, {7, 1}, {2, 3}, {6}, {}, {}, {}});
-    vector<int> result1 = topologicalSort(testingTopSort);
+int main() {
+    // A sample weighted directed acyclic graph (DAG).
+    // Graph visualization (node -> (neighbor, weight)):
+    // 0 -> (1, 2), (2, 1)
+    // 1 -> (3, 3)
+    // 2 -> (3, 1), (4, 6)
+    // 3 -> (4, 2)
+    // 4 -> {}
+
+    vector<vector<Edge>> weightedGraph = {
+        {Edge(1, 2), Edge(2, 1)}, // Node 0
+        {Edge(3, 3)},             // Node 1
+        {Edge(3, 1), Edge(4, 6)}, // Node 2
+        {Edge(4, 2)},             // Node 3
+        {}                        // Node 4
+    };
+
+    // Testing topological sort
     cout << "Testing topological sort...\n";
-    for (int node : result1)
+    vector<int> sortedOrder = topologicalSort(weightedGraph);
+    for (int node : sortedOrder) {
         cout << node << " ";
+    }
     cout << endl;
 
-    vector<vector<pair<int, double>>> weightedGraph{
-        {make_pair(4, 0.5),
-         make_pair(5, 1.5)},
-        {},
-        {},
-        {
-            make_pair(1, 2),
-        },
-        {make_pair(2, 1.5),
-         make_pair(3, 0.5)},
-        {
-            make_pair(6, 1.6),
-        },
-        {}};
-
-    vector<double> result2 = distanceFrom(4, weightedGraph);
-    cout << "Testing shortest distance with weights...\n";
-    cout << "Printing distances from node 4:\n";
-    for (double d : result2)
-        cout << d << endl;
-
-    cout << endl;
+    // Testing shortest path in DAG
+    cout << "\nTesting shortest path from node 0...\n";
+    vector<double> distances = shortestPathInDAG(0, weightedGraph);
+    for (int i = 0; i < distances.size(); i++) {
+        if (distances[i] == numeric_limits<double>::max()) {
+            cout << "Node " << i << ": No path\n";
+        } else {
+            cout << "Node " << i << ": " << distances[i] << endl;
+        }
+    }
 
     return 0;
 }

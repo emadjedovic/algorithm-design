@@ -11,14 +11,11 @@ using namespace std;
 
 void modifiedDFS(int node, const vector<vector<int>> &adjList, vector<bool>& visited)
 {
-    if(visited[node]) return;
-    visited[node] = true; // the resulting set of nodes is read from here
-
+    visited[node] = true;
     vector<int> neighbours = adjList[node];
     for(int n: neighbours)
     {
-        // modification: do dfs only if...
-        if(n>node)
+        if(!visited[n] && n>node)
         modifiedDFS(n, adjList, visited);
     }
 }

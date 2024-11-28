@@ -1,4 +1,4 @@
-//  www.spoj.com/problems/NAKANJ/
+// www.spoj.com/problems/NAKANJ/
 
 #include <iostream>
 #include <vector>
@@ -7,114 +7,94 @@
 #include <unordered_map>
 using namespace std;
 
-bool outOfBoard(const string &destination)
+// input start and destination
+// output minimal number of moves required
+
+bool outOfBoard(const string &position)
 {
-    if (destination[0] < 'a' || destination[0] > 'h')
-        return true;
-    if (destination[1] < '1' || destination[1] > '8')
+    // from a1 to h8
+    char letter = position[0];
+    char number = position[1];
+    if (number < '1' || number > '8' || letter > 'h' || letter < 'a')
         return true;
     return false;
 }
 
-// al the fields the knight can move to
-vector<string> getNeighbours(const string &position)
+vector<string> generateNeighbours(const string &position)
 {
     vector<string> result;
 
-    // (2,-1) means two steps right, one step down
-    vector<pair<int, int>> moves = {
-        {2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2}};
+    // two up, one left/right
+    // two down, one left/right
+    // two right, one up/down
+    // two left, one up/down
 
-    // for each move create a string destination
-    for (const auto &move : moves)
+    vector<vector<int>> moves =
+        {
+            {-2, -1},
+            {-2, 1},
+            {2, -1},
+            {2, 1},
+            {1, -2},
+            {-1, -2},
+            {1, 2},
+            {-1, 2}};
+
+    for (auto move : moves)
     {
-        string destination = position; // move from here
-        destination[0] += move.first;
-        destination[1] += move.second;
-
-        // if not visited and stays on the board then add to neighbours
-        if (!outOfBoard(destination))
-            result.push_back(destination);
-    }
+        string newPosition = position;
+        newPosition[0] += move[0];
+        newPosition[1] += move[1];
+        if (!outOfBoard(newPosition))
+            result.push_back(newPosition);
+    };
 
     return result;
 }
 
-void doubleBFS(const string &start, const string &destination, int &levelFromStart, int &levelFromDestination)
+int minKnightMoves(string start, string dest)
 {
-    // position (string) and distance (int)
-    queue<pair<string, int>> bfsStart;
-    queue<pair<string, int>> bfsDest;
-    bfsStart.push({start, 0});
-    bfsDest.push({destination, 0});
+    if (start == dest)
+        return 0;
 
-    unordered_map<string, bool> visitedStart;
-    unordered_map<string, bool> visitedDest;
-    visitedStart[start] = true;
-    visitedDest[destination] = true;
+    // list of legal moves
+    // nodes are positions and two nodes are directly connected if our knight can reach that position from current position
+    // traverse neighbours until reached destination
+    // bfs with layer tracking
+    // double bfs for better efficiency
 
-    while (!bfsStart.empty() && !bfsDest.empty())
+    unordered_map<string, int> movesMade;
+    movesMade[start] = 0;
+
+    queue<string> q;
+    q.push(start);
+
+    while (true)
     {
-        string currentNodeS = bfsStart.front().first;
-        int currentDistanceS = bfsStart.front().second;
-        bfsStart.pop();
+        string current = q.front();
+        q.pop();
 
-        vector<string> neighboursS = getNeighbours(currentNodeS);
-        for (const string &n : neighboursS)
+        vector<string> neighbours = generateNeighbours(current);
+        for (string n : neighbours)
         {
-            levelFromStart = currentDistanceS + 1;
-            if (visitedDest[n])
+            if (n == dest)
+                return movesMade[current] + 1;
+            // if neighbour was already noted in movesMade then skip
+            if (movesMade.find(n) != movesMade.end())
             {
-                // collision with nodes from destination bfs
-                cout << "Collided at: " << n << endl;
-                return;
+                // already visited
+                continue;
             }
-            bfsStart.push({n, levelFromStart});
-            visitedStart[n] = true;
-        }
-
-        string currentNodeD = bfsDest.front().first;
-        int currentDistanceD = bfsDest.front().second;
-        bfsDest.pop();
-
-        vector<string> neighboursD = getNeighbours(currentNodeD);
-
-        for (const string &n : neighboursD)
-        {
-            levelFromDestination = currentDistanceD + 1;
-            if (visitedStart[n])
-            {
-                // collision with nodes from start bfs
-                cout << "Collided at: " << n << endl;
-                return;
-            }
-            bfsDest.push({n, levelFromDestination});
-            visitedDest[n] = true;
+            q.push(n);
+            movesMade[n] = movesMade[current] + 1;
         }
     }
-}
-
-int minKnightMoves(string start, string destination)
-{
-    if (start == destination)
-        return 0;
-    int levelFromStart = 0;
-    int levelFromDestination = 0;
-    doubleBFS(start, destination, levelFromStart, levelFromDestination);
-    return levelFromStart + levelFromDestination;
 }
 
 int main()
 {
-    int T; // 1<=T<=4096
-    cout << "Test cases: ";
-    cin >> T;
-    for (int i = 0; i < T; i++)
-    {
-        string start, destination;
-        cout << "Input start and destination (from a1 to h8): ";
-        cin >> start >> destination;
-        cout << "Minimal number of knight moves required: " << minKnightMoves(start, destination) << endl;
-    }
+    cout << minKnightMoves("a1", "h8") << endl; // 6
+    cout << minKnightMoves("a1", "c2") << endl; // 1
+    cout << minKnightMoves("h8", "c3") << endl; // 4
     return 0;
 }

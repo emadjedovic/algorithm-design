@@ -11,12 +11,15 @@ using namespace std;
 
 void DFS(int node, const vector<vector<int>> &adjList, vector<bool> &visited)
 {
-    if (visited[node])
-        return;
     visited[node] = true;
     vector<int> neighbours = adjList[node];
     for (int n : neighbours)
-        DFS(n, adjList, visited);
+    {
+        if (!visited[n])
+        {
+            DFS(n, adjList, visited);
+        }
+    }
 }
 
 int numComponents(const vector<vector<int>> &adjList)
@@ -40,13 +43,12 @@ int numComponents(const vector<vector<int>> &adjList)
 int main()
 {
     vector<vector<int>> test = {
-        {1,2},
+        {1, 2},
         {0},
         {0},
         {},
-        {}
-    };
+        {}};
     int x = numComponents(test);
-    cout<<x<<endl;
+    cout << x << endl;
     return 0;
 }
