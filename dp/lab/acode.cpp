@@ -11,7 +11,7 @@ using namespace std;
 // check if a two-character string is a valid encoding between 10 and 26
 bool validNumber(string ab)
 {
-    return (ab[0]=='1' || ab[0]=='2') && ab[1]<='6';
+    return (ab[0] == '1' || ab[0] == '2') && ab[1] <= '6';
 }
 
 int numPossibleDecodings(const string &encryption)
@@ -21,29 +21,29 @@ int numPossibleDecodings(const string &encryption)
     D[0] = 1; // only one digit, one way to decode
 
     // two digit number
-    if(validNumber(encryption.substr(0,2)))
+    if (validNumber(encryption.substr(0, 2)))
     {
         D[1]++;
     }
     // one digit number
-    if(encryption[1]!='0') D[1]++;
+    if (encryption[1] != '0')
+        D[1]++;
 
     // three or more digits
-    for(int i=2; i<encryption.size(); i++)
+    for (int i = 2; i < encryption.size(); i++)
     {
         // if the last two characters form a number between 10 and 26 then add the number of decodings from two characters back
-        if(validNumber(encryption.substr(i-1,2)))
+        if (validNumber(encryption.substr(i - 1, 2)))
         {
-            D[i]+=D[i-2];
+            D[i] += D[i - 2];
         }
         // add the number of decodings from one character back
-        if(encryption[i]!='0')
-            D[i]+=D[i-1];
+        if (encryption[i] != '0')
+            D[i] += D[i - 1];
     }
 
     // the last element gives the result for the full string
-    return D[encryption.size()-1];
-
+    return D[encryption.size() - 1];
 }
 
 int main()
@@ -52,7 +52,7 @@ int main()
     for (int i = 0; i < sets; i++)
     {
         string encryption;
-        cout<<"Input an encrypted number: ";
+        cout << "Input an encrypted number: ";
         cin >> encryption;
         if (encryption == "0")
             break;

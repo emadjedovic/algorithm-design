@@ -1,9 +1,11 @@
 // www.hackerrank.com/challenges/stockmax/problem
 
 /*
-Your algorithms have become so good at predicting the market that you now know what the share price of Wooden Orange Toothpicks Inc. (WOT) will be for the next number of days.
+Each day, you can either buy one share of WOT,
+sell any number of shares of WOT that you own,
+or not make any transaction at all.
 
-Each day, you can either buy one share of WOT, sell any number of shares of WOT that you own, or not make any transaction at all. What is the maximum profit you can obtain with an optimum trading strategy?
+What is the maximum profit you can obtain with an optimum strategy?
 */
 
 #include <iostream>
@@ -14,6 +16,31 @@ using namespace std;
 // prices - predicted daily stock prices
 int stockmax(const vector<int> &prices)
 {
+    int n = prices.size();
+    if (n == 0)
+        return 0; // No prices, no profit
+    if (n == 1)
+        return 0; // Only one day, no opportunity to buy and sell
+
+    int max_future_price = 0;
+    int profit = 0;
+
+    // traverse backwards
+    for (int i = n - 1; i >= 0; i--)
+    {
+        if (prices[i] >= max_future_price)
+        {
+            max_future_price = prices[i];
+            // this ensures we never sell anything once we enter a descending share-price sequence
+        }
+        else
+        {
+            // buy shares because we can sell them later at a price higher than current
+            profit += max_future_price - prices[i];
+            // compare with examples down below, it makes sense
+        }
+    }
+    return profit;
 }
 
 int main()
