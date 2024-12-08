@@ -45,6 +45,33 @@ int collectedValue(const vector<int> &positions, const vector<int> &values, int 
     return maxValueEitherIncluded[numHouses - 1];
 }
 
+int greedyHouses(const vector<int> &positions, int k)
+{
+    int numHouses = positions.size();
+    int maxValue = 0;
+
+    int i = 0;
+    maxValue += 1;
+    int nextPosition = i + 1;
+    while (true)
+    {
+        if (nextPosition >= numHouses)
+            break;
+        if (positions[nextPosition] - positions[i] < k)
+        {
+            nextPosition++;
+        }
+        else
+        {
+            // we have a house thats at least k away
+            maxValue++;
+            i = nextPosition;
+            nextPosition = i + 1;
+        }
+    }
+    return maxValue;
+}
+
 int main()
 {
     vector<int> position = {1, 3, 6, 10};
@@ -53,6 +80,8 @@ int main()
 
     cout << "Maximum collected value from houses: "
          << collectedValue(position, value, k) << endl;
+
+    cout << "If all houses have value of 1: " << greedyHouses(position, k) << endl;
 
     return 0;
 }
