@@ -146,9 +146,7 @@ void Graph::printAdjacencyList()
     Node currentNode = adjacencyList[i];
     cout << currentNode.label << ": ";
     for (size_t j = 0; j < currentNode.neighbours.size(); j++)
-    {
       cout << currentNode.neighbours[j] << " ";
-    }
 
     cout << endl;
   }
@@ -194,10 +192,8 @@ void Graph::DFS_classic(int start)
     // push the neighbours onto the stack
     vector<int> neighbours = adjacencyList[nodeLabel].neighbours;
     for (int neighbour : neighbours)
-    {
       if (!visited[neighbour])
         s.push(neighbour);
-    }
   }
 }
 
@@ -240,10 +236,8 @@ void Graph::BFS_classic(int start)
       // push neighbours into queue
       vector<int> neighbours = adjacencyList[nodeLabel].neighbours;
       for (int neighbour : neighbours)
-      {
         if (!visited[neighbour])
           q.push(neighbour);
-      }
     }
   }
 }

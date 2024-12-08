@@ -35,44 +35,44 @@ void Graph::findEulerCircuit()
     cout << "Euler circuit possible..." << endl;
 
     vector<int> eulerCircuit;
-    stack<int> path;
+    stack<int> path_stack;
     adjacencyListToAdjacencyMatrix();          // popunjava matricu susjedstva
     vector<vector<int>> mat = adjacencyMatrix; // kopija
 
-    path.push(0); // ovdje bilježimo traversal
+    path_stack.push(0); // ovdje bilježimo traversal
 
-    while (!path.empty())
+    while (!path_stack.empty())
     {
-        int currentNode = path.top();
+        int currentNode = path_stack.top();
         bool hasUnusedEdge = false;
 
         // prolazimo matricom susjedstva
-        for (size_t neighbor = 0; neighbor < mat.size(); neighbor++)
+        for (size_t column = 0; column < mat[0].size(); column++)
         {
-            if (mat[currentNode][neighbor] == 1)
+            if (mat[currentNode][column] == 1)
             {
                 // stavljamo susjeda na stack
-                path.push(neighbor);
+                path_stack.push(column);
                 // pređene grane uklanjamo (postavljamo na 0)
-                mat[currentNode][neighbor] = 0;
+                mat[currentNode][column] = 0;
                 if (!isDirected)
-                    mat[neighbor][currentNode] = 0;
-                hasUnusedEdge = true;
+                    mat[column][currentNode] = 0;
+
+                hasUnusedEdge = true; // nepređena grana
                 break; // nastavljamo dalje od ovog susjeda
             }
         }
 
-        // nema susjeda (sve grane iskorištene/uklonjene)
+        // ako su sve grane iskorištene onda se vraćamo nazad
         if (!hasUnusedEdge)
         {
             eulerCircuit.push_back(currentNode);
-            path.pop();
+            path_stack.pop(); // backtrack na prethodni čvor
         }
     }
 
     cout << "Euler Circuit: ";
     for (int node : eulerCircuit)
         cout << node << " ";
-    cout << endl
-         << endl;
+    cout << endl << endl;
 }
