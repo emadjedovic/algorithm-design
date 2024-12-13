@@ -1,6 +1,7 @@
 /*
 A subsequence is palindromic if it is the same whether read left to right or right to left.
 Devise an algorithm that takes a sequence and returns the longest palindromic subsequence.
+(not the same as substring)
 */
 
 #include <iostream>
