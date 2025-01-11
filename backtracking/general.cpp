@@ -1,0 +1,48 @@
+#define MAX_CANDIDATES INT32_MAX;
+
+bool finished = false; // found all solutions yet?
+
+// tests whether the first k elements of an array a is a complete solution
+bool is_a_solution(int a[], int k, int input)
+{
+    // k==n for example
+    return true;
+}
+
+void process_solution(int a[], int k, int input)
+{
+    // do something, print, count, or other
+    return;
+}
+
+// fills an array c with all possible candidates for kth position of a given the contents of the first k-1 positions
+// store the number of candidates in "ncandidates" location
+void construct_candidates(int a[], int k, int input, int c[], int *ncandidates)
+{
+    // specialized logic
+    return;
+}
+
+void backtrack(int a[], int k, int input)
+{
+    int c[MAX_CANDIDATES]; // candidates for the next position
+    int ncandidates;       // next position candidate count
+
+    if (is_a_solution(a, k, input))
+    {
+        process_solution(a, k, input);
+    }
+    else
+    {
+        k = k + 1;
+        construct_candidates(a, k, input, c, &ncandidates);
+        // traverse through all candidates
+        for (int i = 0; i < ncandidates; i++)
+        {
+            a[k] = c[i];
+            backtrack(a, k, input);
+            if (finished)
+                return; // terminate early
+        }
+    }
+}
