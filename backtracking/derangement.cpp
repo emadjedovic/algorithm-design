@@ -6,8 +6,8 @@ constructs all the derangements of n items
 */
 
 #include <iostream>
-#define MAX_CANDIDATES INT32_MAX;
-#define NMAX INT32_MAX;
+#define MAX_CANDIDATES 100000
+#define NMAX 100000
 
 bool is_a_solution(int a[], int k, int n)
 {

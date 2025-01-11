@@ -1,4 +1,4 @@
-#define MAX_CANDIDATES INT32_MAX;
+#define MAX_CANDIDATES 100000
 
 bool finished = false; // found all solutions yet?
 
