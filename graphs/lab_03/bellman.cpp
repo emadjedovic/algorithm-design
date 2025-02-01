@@ -36,6 +36,7 @@ public:
     bool BellmanFord(int start)
     {
         distancesBF[start] = 0;
+        // for each node we relax all edges
         for (int i = 0; i < numNodes; i++)
             for (const Edge &e : edgeList)
                 // relaxation of every edge

@@ -186,9 +186,11 @@ void Graph::DFS_classic(int start)
   {
     int nodeLabel = s.top();
     s.pop(); // takes off the stack
+
     visited[nodeLabel] = true;
     // do something with the node
     cout << "Visited node: " << nodeLabel << endl;
+
     // push the neighbours onto the stack
     vector<int> neighbours = adjacencyList[nodeLabel].neighbours;
     for (int neighbour : neighbours)
@@ -199,18 +201,19 @@ void Graph::DFS_classic(int start)
 
 void Graph::DFS_recursive_helper(int start)
 {
+  // same as classic DFS
   visited[start] = true;
   cout << "Visited node: " << start << endl;
 
+  // instead of pushing the neighbours onto the stack, we call the function recursively
   vector<int> neighbours = adjacencyList[start].neighbours;
   for (int neighbour : neighbours)
-  {
     if (!visited[neighbour])
     {
       cout << "Passing the edge (" << start << ", " << neighbour << ")" << endl;
       DFS_recursive_helper(neighbour);
     }
-  }
+
 }
 
 void Graph::DFS_recursive(int start)

@@ -25,6 +25,7 @@ void construct_candidates(int a[], int k, int input, int c[], int *ncandidates)
 
 void backtrack(int a[], int k, int input)
 {
+    // construct_candidates method fills c and ncandidates
     int c[MAX_CANDIDATES]; // candidates for the next position
     int ncandidates;       // next position candidate count
 
@@ -34,12 +35,12 @@ void backtrack(int a[], int k, int input)
     }
     else
     {
-        k = k + 1;
+        k++; // move to next position
         construct_candidates(a, k, input, c, &ncandidates);
         // traverse through all candidates
         for (int i = 0; i < ncandidates; i++)
         {
-            a[k] = c[i];
+            a[k] = c[i]; // add candidate c[i] to the solution
             backtrack(a, k, input);
             if (finished)
                 return; // terminate early

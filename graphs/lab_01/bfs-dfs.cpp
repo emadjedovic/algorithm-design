@@ -31,14 +31,14 @@ void BFS(int start, const vector<vector<int>>& adjList, vector<bool>& queued)
 
 void DFS(int node, const vector<vector<int>>& adjList, vector<bool>& visited)
 {
-    cout<<node<<" ";
+    // mark as visited and process the node in some way
     visited[node] = true;
+    cout<<node<<" ";
+
     vector<int> neighbours = adjList[node];
     for(int n: neighbours)
-    {
         if(!visited[n])
-        DFS(n, adjList, visited);
-    }
+            DFS(n, adjList, visited);
 }
 
 void DFSstack(int start, const vector<vector<int>>& adjList, vector<bool>& stacked)

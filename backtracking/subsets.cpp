@@ -5,10 +5,8 @@
 void process_solution(bool a[], int k, int n)
 {
     for (int i = 0; i < k; i++)
-    {
         if (a[i] == true)
             std::cout << i+1 << " ";
-    }
 
     std::cout << std::endl;
 }
@@ -32,13 +30,14 @@ void backtrack(bool a[], int k, int n)
 {
     bool c[MAX_CANDIDATES];
     int ncandidates;
+
     if (is_a_solution(a, k, n))
     {
         process_solution(a, k, n);
     }
     else
     {
-        k = k + 1;
+        k++;
         construct_candidates(a, k, n, c, &ncandidates);
         for (int i = 0; i < ncandidates; i++)
         {
@@ -51,7 +50,7 @@ void backtrack(bool a[], int k, int n)
 
 void generate_subsets(int n)
 {
-    bool a[NMAX] = {false}; // solution vector
+    bool a[NMAX] = {false}; // solution vector, initialized all to false
     backtrack(a, 0, n);
 }
 

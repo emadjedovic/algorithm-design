@@ -4,15 +4,13 @@
 
 bool is_a_solution(int a[], int k, int n)
 {
-    return k == n;
+    return k == n; // reached the end position
 }
 
 void process_solution(int a[], int k, int n)
 {
     for (int i = 0; i < k; i++)
-    {
         std::cout << a[i] << " ";
-    }
 
     std::cout << std::endl;
 }
@@ -36,6 +34,7 @@ void construct_candidates(int a[], int k, int n, int c[], int *ncandidates)
     {
         if (in_perm[i] == false)
         {
+            // not in the permutation yet
             c[*ncandidates] = i;
             (*ncandidates)++;
         }

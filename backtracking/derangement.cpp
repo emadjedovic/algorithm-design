@@ -2,7 +2,7 @@
 A derangement is a permutation p of {1,...,n} such that no
 item is in its proper position, i.e. pi != i for all 1≤i≤n.
 Write an efficient backtracking program with pruning that
-constructs all the derangements of n items
+constructs all the derangements of n items.
 */
 
 #include <iostream>
@@ -17,9 +17,7 @@ bool is_a_solution(int a[], int k, int n)
 void process_solution(int a[], int k, int n)
 {
     for (int i = 0; i < k; i++)
-    {
         std::cout << a[i] << " ";
-    }
 
     std::cout << std::endl;
 }
@@ -31,6 +29,8 @@ void construct_candidates(int a[], int k, int n, int c[], int *ncandidates)
     bool in_perm[NMAX];
     for (int i = 0; i < n; i++)
         in_perm[i] = false;
+
+    // for each element in the solution up to kth element mark it in in_perm array as "used"
     for (int i = 0; i < k; i++)
     {
         int element = a[i];
@@ -40,8 +40,11 @@ void construct_candidates(int a[], int k, int n, int c[], int *ncandidates)
     *ncandidates = 0;
     for (int i = 0; i < n; i++)
     {
-        if (i == k)
+        if (i == k){
+            // the current element can't be a candidate
             continue;
+        }
+        
         if (in_perm[i] == false)
         {
             c[*ncandidates] = i;
