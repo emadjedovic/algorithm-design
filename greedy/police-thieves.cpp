@@ -19,7 +19,9 @@ int policeThief(const vector<char>& v, int k){
 
    // thief and police indices (positions)
    int thief = 0, police = 0;
+   // until we reach the end of either vector
    while (thief < thieves.size() && police < policemen.size()) {
+      // if the thief is within the range of the police
       if (abs(thieves[thief] - policemen[police]) <= k) {
         // this thief can be caught by this policeman
          caught++;

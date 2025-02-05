@@ -24,10 +24,7 @@ void construct_candidates(int a[], int k, int n, int c[], int *ncandidates)
     for (int i = 0; i < n; i++)
         in_perm[i] = false;
     for (int i = 0; i < k; i++)
-    {
-        int element = a[i];
-        in_perm[element] = true;
-    }
+        in_perm[a[i]] = true;
 
     *ncandidates = 0;
     for (int i = 0; i < n; i++)
