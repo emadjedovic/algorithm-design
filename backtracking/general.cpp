@@ -15,7 +15,7 @@ void process_solution(int a[], int k, int input)
     return;
 }
 
-// fills an array c with all possible candidates for kth position of a given the contents of the first k-1 positions
+// fills an array c with all possible candidates for kth position of a array given the contents of the first k-1 positions
 // store the number of candidates in "ncandidates" location
 void construct_candidates(int a[], int k, int input, int c[], int *ncandidates)
 {
@@ -40,7 +40,7 @@ void backtrack(int a[], int k, int input)
         // traverse through all candidates
         for (int i = 0; i < ncandidates; i++)
         {
-            a[k] = c[i]; // add candidate c[i] to the solution
+            a[k] = c[i]; // add candidate c[i] to the kth position of the current solution
             backtrack(a, k, input);
             if (finished)
                 return; // terminate early
