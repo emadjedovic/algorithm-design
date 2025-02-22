@@ -23,6 +23,7 @@ void construct_candidates(int a[], int k, int n, int c[], int *ncandidates)
     bool in_perm[NMAX];
     for (int i = 0; i < n; i++)
         in_perm[i] = false;
+    // previous k-1 elements of the solution a
     for (int i = 0; i < k; i++)
         in_perm[a[i]] = true;
 
@@ -31,7 +32,7 @@ void construct_candidates(int a[], int k, int n, int c[], int *ncandidates)
     {
         if (in_perm[i] == false)
         {
-            // not in the permutation yet
+            // not in the permutation yet, it's a candidate
             c[*ncandidates] = i;
             (*ncandidates)++;
         }
