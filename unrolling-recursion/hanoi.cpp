@@ -21,7 +21,7 @@ void Hanoi2(int N,int A,int B) {
 X: if(N!=0) {
      Hanoi(N-1,A,6-A-B);
      // replaced a recursive call with a label and a goto
-     N--; A=6-A-B;
+     N--; A=6-A-B; // B stays the same
      goto X;
    }
 }
@@ -40,7 +40,8 @@ X: while(N!=0) {
     // the same procedure for the first recursive call, but pushing the formal parameters onto the stack first
      s.push(N); s.push(A); s.push(B);
      N--; B=6-A-B;
-     goto X;
+     goto X; // replaces the recursive call
+     // put a label directly after goto
 Y:   N--; A=6-A-B;
    }
    // reading from the stack
@@ -69,19 +70,21 @@ X: while(N!=0) {
    }
 }
 
+// remove the rest of the goto statements
 void HanoiFinal(int N,int A,int B) {
   stack<int> s;
+  // encapsulated the while loop in another while loop
   while(true) {
     while(N!=0) {
       s.push(N); s.push(A); s.push(B);
        N--; B=6-A-B;
-       // remove the goto
+       // goto X;
     }
     if(s.empty()) break;
     B=s.top(); s.pop();
     A=s.top(); s.pop();
     N=s.top(); s.pop();
     N--; A=6-A-B;
-    // replaced this goto X with while(true) loop
+    // goto X;
   }
 }

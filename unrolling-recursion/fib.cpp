@@ -6,14 +6,14 @@ using namespace std;
 
 int fib1(int n) {
   if(n<3) return 1;
-  else return fib0(n-1)+fib0(n-2);
+  else return fib0(n-1)+fib0(n-2); // two recursive calls
 }
 
 int fib2(int n) {
   int rez,a,b;
   if(n<3) rez=1;
   else {
-    // created variables for the recursive calls
+    // created variables for the recursive calls as well as a "result" variable
     a=fib1(n-1);
     b=fib1(n-2);
     rez=a+b;
@@ -21,18 +21,22 @@ int fib2(int n) {
   return rez;
 }
 
+// add resursion stack, goto and labels to replace the recursive calls
 int fib3(int n) {
    int rez,a,b;
-   stack<int> s; // simulate recursion stack
+   stack<int> s;
 X: if(n<3) rez=1;
    else {
-    // recursive call number 1, Y is the label for the return
+    // stack the formal parameters and the number of the recursive call
      s.push(a); s.push(b); s.push(n); s.push(1);
-     n-=1; goto X;
+     // assign the values of the real parameters to the formal parameters
+     n-=1;
+     // replace the recursive call with a goto statement
+     goto X;
 Y:   a=rez;
-// recursive call number 2, Z is the label for the return
      s.push(a); s.push(b); s.push(n); s.push(2);
-     n-=2; goto X;
+     n-=2;
+     goto X;
 Z:   b=rez;
      rez=a+b;
    }
@@ -49,17 +53,19 @@ Z:   b=rez;
    return rez;
 }
 
+// got rid of variable b
 int fib4(int n) {
    int rez,a;
    stack<int> s;
 X: if(n<3) rez=1;
    else {
      s.push(a); s.push(n); s.push(1);
-     n-=1; goto X;
+     n-=1;
+     goto X;
 Y:   a=rez;
      s.push(a); s.push(n); s.push(2);
-     n-=2; goto X;
-     // got rid of one variable
+     n-=2;
+     goto X;
 Z:   rez+=a;
    }
    if(!s.empty()) {
@@ -72,38 +78,42 @@ Z:   rez+=a;
    return rez;
 }
 
+// since the label Z was only called from the "if" block, we moved it there
 int fib5(int n) {
    int rez,a;
    stack<int> s;
+
 X: if(n<3) rez=1;
    else {
      s.push(a); s.push(n); s.push(1);
-     n-=1; goto X;
+     n-=1;
+     goto X;
 Y:   a=rez;
      s.push(a); s.push(n); s.push(2);
-     n-=2; goto X;
-     // since the label Z was only called from the "if" block, we moved it there
+     n-=2;
+     goto X;
    }
-   
+  
 Z: if(!s.empty()) {
      int gdje=s.top(); s.pop();
      n=s.top(); s.pop();
      a=s.top(); s.pop();
-     if(gdje==1) goto Y;
+     if(gdje==1) goto Y; // the only place we jump to Y
      rez+=a; // here
      goto Z; 
    }
    return rez;
 }
 
+// moved the Y label to the "if" block because that's where it's needed
 int fib6(int n) {
    int rez,a;
    stack<int> s;
 X: if(n<3) rez=1;
    else {
      s.push(a); s.push(n); s.push(1);
-     n-=1; goto X;
-     // moved the Y label to the "if" block as well
+     n-=1;
+     goto X;
    }
 Z: if(!s.empty()) {
      int gdje=s.top(); s.pop();
@@ -113,7 +123,8 @@ Z: if(!s.empty()) {
         // moved the Y label here
        a=rez;
        s.push(a); s.push(n); s.push(2);
-       n-=2; goto X;
+       n-=2;
+       goto X;
      }
      rez+=a;
      goto Z;
@@ -128,7 +139,8 @@ X: if(n<3) rez=1;
    else {
     // the variable "a" is not used here anymore
      s.push(n); s.push(1);
-     n-=1; goto X;
+     n-=1;
+     goto X;
    }
 Z: if(!s.empty()) {
      int gdje=s.top(); s.pop();
@@ -136,7 +148,8 @@ Z: if(!s.empty()) {
      // we no longer have variable "a" on the stack
      if(gdje==1) {
        s.push(rez); s.push(n); s.push(2);
-       n-=2; goto X;
+       n-=2;
+       goto X;
      }
      rez+=s.top(); s.pop();
      goto Z;
